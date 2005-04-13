@@ -1,5 +1,7 @@
 
-
 ---- DONE ----
 
 * define banner in a common way (like option parser), maybe use the one from option parser
+* raise NoCommandGivenError when no command was given
+* ability to specify default command (used when no command was given)
+* add order,order!,... methods to mimic optparse

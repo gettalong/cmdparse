@@ -71,7 +71,7 @@ CLOBBER << "doc/output"
 desc "Builds the documentation"
 task :doc => [:rdoc] do
   Dir.chdir("doc")
-  sh "webgen -V 4"
+  sh "webgen -V 3"
   Dir.chdir("..")
 end
 
@@ -152,14 +152,6 @@ else
     pkg.need_tar = true
   end
 
-end
-
-
-desc "Creates a tag in the repository"
-task :tag do
-  repositoryPath = File.dirname( $1 ) if `svn info` =~ /^URL: (.*)$/
-  fail "Tag already created in repository " if /#{PKG_FULLNAME}/ =~ `svn ls #{repositoryPath}/versions`
-  sh "svn cp -m 'Created version #{PKG_FULLNAME}' #{repositoryPath}/trunk #{repositoryPath}/versions/#{PKG_FULLNAME}"
 end
 
 desc "Upload documentation to homepage"

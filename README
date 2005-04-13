@@ -36,12 +36,12 @@ You can build the documentation by invoking
  $ rake doc
 
 This builds the API and the additional documentation. The additional documentation needs webgen
-(webgen.rubyforge.org) for building.
+0.3.1 (webgen.rubyforge.org) for building.
 
 
 = Example
 
-There is an example of how to use cmdparse in the +test+ directory.
+There is an example of how to use cmdparse in the +test.rb+ file.
 
 
 = Contact

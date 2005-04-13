@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-$: << "lib"
+$:.unshift "lib"
 require 'cmdparse'
 require 'ostruct'
 
@@ -26,6 +26,34 @@ class TestCommand < CommandParser::Command
   end
 end
 
+class SubCommand < CommandParser::Command
+  def initialize
+    super('testing')
+    options.on("-s", "tests")
+  end
+  def description
+    "Testing method"
+  end
+  def execute( commandParser, args )
+    puts "Processing command testing with <#{args.join(' ')}>"
+  end
+end
+
+class SubCommands < CommandParser::Command
+  def initialize
+    super('other')
+    @options = CommandParser.new
+    @options.add_command SubCommand.new
+    @options.add_command CommandParser::HelpCommand.new
+  end
+  def description
+    "Provides additional commands"
+  end
+  def execute( commandParser, args )
+    puts "Sub command finished: "
+  end
+end
+
 cmd = CommandParser.new
 cmd.options do |opt|
   opt.program_name = "testProgram"
@@ -35,7 +63,8 @@ cmd.options do |opt|
   opt.on("-r", "--require TEST",  "Require the TEST")
   opt.on("--delay N", Integer, "Delay test for N seconds before executing")
 end
-cmd.add_command TestCommand.new
+cmd.add_command TestCommand.new, true
+cmd.add_command SubCommands.new
 cmd.add_command CommandParser::HelpCommand.new
 cmd.add_command CommandParser::VersionCommand.new
 cmd.parse!( ARGV )

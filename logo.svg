@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   width="210mm"
+   height="297mm"
+   id="svg1"
+   sodipodi:version="0.32"
+   inkscape:version="0.40"
+   sodipodi:docbase="/home/thomas/work/projects/trunk/cmdparse"
+   sodipodi:docname="logo.svg"
+   inkscape:export-filename="/home/thomas/work/projects/trunk/cmdparse/doc/src/logo.png"
+   inkscape:export-xdpi="25.400000"
+   inkscape:export-ydpi="25.400000"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:xml="http://www.w3.org/XML/1998/namespace"
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:xlink="http://www.w3.org/1999/xlink">
+  <defs
+     id="defs3">
+    <linearGradient
+       id="linearGradient1885">
+      <stop
+         style="stop-color:#8be483;stop-opacity:1.0000000;"
+         offset="0.0000000"
+         id="stop1886" />
+      <stop
+         style="stop-color:#8ce483;stop-opacity:0.0000000;"
+         offset="1.0000000"
+         id="stop1887" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient1687">
+      <stop
+         style="stop-color:#8080d0;stop-opacity:1.0000000;"
+         offset="0.0000000"
+         id="stop1688" />
+      <stop
+         style="stop-color:#8080d0;stop-opacity:0.0000000;"
+         offset="1.0000000"
+         id="stop1689" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1885"
+       id="linearGradient1888"
+       x1="88.582674"
+       y1="343.70078"
+       x2="620.07875"
+       y2="343.70078"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="translate(1.759710,-4.846481e-8)" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.0000000"
+     inkscape:cx="331.79761"
+     inkscape:cy="533.51868"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:grid-bbox="true"
+     inkscape:window-width="1550"
+     inkscape:window-height="1003"
+     inkscape:window-x="0"
+     inkscape:window-y="0" />
+  <metadata
+     id="metadata4">
+    <rdf:RDF
+       id="RDF5">
+      <cc:Work
+         rdf:about=""
+         id="Work6">
+        <dc:format
+           id="format7">image/svg+xml</dc:format>
+        <dc:type
+           id="type9"
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="fill:url(#linearGradient1888);fill-opacity:1.0000000;fill-rule:evenodd;stroke:#000000;stroke-width:35.028545;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:3.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000"
+       id="rect1728"
+       width="496.46753"
+       height="496.46753"
+       x="107.85666"
+       y="95.467010"
+       rx="97.030205"
+       ry="97.030205"
+       inkscape:export-filename="/home/thomas/work/projects/trunk/cmdparse/doc/src/rect1728.png"
+       inkscape:export-xdpi="25.400000"
+       inkscape:export-ydpi="25.400000" />
+    <rect
+       style="fill:#e2e483;fill-opacity:1.0000000;fill-rule:evenodd;stroke:#000000;stroke-width:4.3633089;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4.0000000;stroke-dashoffset:0.0000000;stroke-opacity:1.0000000"
+       id="rect1764"
+       width="420.01529"
+       height="255.31058"
+       x="144.26498"
+       y="149.73579"
+       rx="21.000000"
+       ry="21.000000" />
+    <text
+       xml:space="preserve"
+       style="font-size:40.000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Bitstream Vera Sans;text-anchor:start;writing-mode:lr"
+       x="183.84776"
+       y="764.21619"
+       id="text1889"
+       sodipodi:linespacing="100%"
+       transform="translate(62.91328,-251.6704)"><tspan
+         sodipodi:role="line"
+         id="tspan1890"
+         x="183.84776"
+         y="764.21619">cmdparse</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10.000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;fill:#000000;fill-opacity:1.0000000;stroke:none;stroke-width:1.0000000pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1.0000000;font-family:Bitstream Vera Sans Mono;text-anchor:start;writing-mode:lr"
+       x="224.30077"
+       y="179.15842"
+       id="text1160"
+       sodipodi:linespacing="100%"
+       transform="translate(-47.25295,-4.971639)"><tspan
+         x="224.30077"
+         y="179.15842"
+         sodipodi:role="line"
+         id="tspan1163">[penguin] ~ &gt; program help</tspan><tspan
+         x="224.30077"
+         y="189.15842"
+         sodipodi:role="line"
+         id="tspan1165">Usage: program [global options] &lt;command&gt; [options] [args]</tspan><tspan
+         x="224.30077"
+         y="199.15842"
+         sodipodi:role="line"
+         id="tspan1167"></tspan><tspan
+         x="224.30077"
+         y="209.15842"
+         sodipodi:role="line"
+         id="tspan1169">Available commands:</tspan><tspan
+         x="224.30077"
+         y="219.15842"
+         sodipodi:role="line"
+         id="tspan1171">    help       Provides help for the individual commands</tspan><tspan
+         x="224.30077"
+         y="229.15842"
+         sodipodi:role="line"
+         id="tspan1173">    test       Executes tests</tspan><tspan
+         x="224.30077"
+         y="239.15842"
+         sodipodi:role="line"
+         id="tspan1175">    doSome     Does something</tspan><tspan
+         x="224.30077"
+         y="249.15842"
+         sodipodi:role="line"
+         id="tspan1177">    version    Shows the version of the program</tspan><tspan
+         x="224.30077"
+         y="259.15842"
+         sodipodi:role="line"
+         id="tspan1179"></tspan><tspan
+         x="224.30077"
+         y="269.15842"
+         sodipodi:role="line"
+         id="tspan1181">Global options:</tspan><tspan
+         x="224.30077"
+         y="279.15842"
+         sodipodi:role="line"
+         id="tspan1183">    -r, --require TEST      Require the TEST</tspan><tspan
+         x="224.30077"
+         y="289.15842"
+         sodipodi:role="line"
+         id="tspan1185">        --delay N           Delay test for N seconds</tspan><tspan
+         x="224.30077"
+         y="299.15842"
+         sodipodi:role="line"
+         id="tspan1187">    -h, --help [command]    Show help</tspan><tspan
+         x="224.30077"
+         y="309.15842"
+         sodipodi:role="line"
+         id="tspan1189">    -v, --version           Show the version of the program</tspan><tspan
+         x="224.30077"
+         y="319.15842"
+         sodipodi:role="line"
+         id="tspan1191">[penguin] ~ &gt; program test</tspan><tspan
+         x="224.30077"
+         y="329.15842"
+         sodipodi:role="line"
+         id="tspan1193">Doing test 1</tspan><tspan
+         x="224.30077"
+         y="339.15842"
+         sodipodi:role="line"
+         id="tspan1195">Doing test 2</tspan><tspan
+         x="224.30077"
+         y="349.15842"
+         sodipodi:role="line"
+         id="tspan1197">Finished!</tspan><tspan
+         x="224.30077"
+         y="359.15842"
+         sodipodi:role="line"
+         id="tspan1199">[penguin] ~ &gt; program doSome</tspan><tspan
+         x="224.30077"
+         y="369.15842"
+         sodipodi:role="line"
+         id="tspan1201">Doing one thing</tspan><tspan
+         x="224.30077"
+         y="379.15842"
+         sodipodi:role="line"
+         id="tspan1203">Doing another thing</tspan><tspan
+         x="224.30077"
+         y="389.15842"
+         sodipodi:role="line"
+         id="tspan1205">[penguin] ~ &gt; exit</tspan></text>
+  </g>
+</svg>
