@@ -99,7 +99,7 @@ end
 class CommandParser
 
   # The version of the command parser
-  VERSION = [1, 0, 1]
+  VERSION = [1, 0, 2]
 
   # This error is thrown when an invalid command is encountered.
   class InvalidCommandError < OptionParser::ParseError
@@ -215,7 +215,9 @@ class CommandParser
       puts "Available commands:"
       width = commandParser.commands.keys.max {|a,b| a.length <=> b.length }.length
       commandParser.commands.sort.each do |name, command|
-        puts commandParser.options.summary_indent + name.ljust( width + 4 ) + command.description
+        print commandParser.options.summary_indent + name.ljust( width + 4 ) + command.description
+        print " (default)" if name == commandParser.default
+        print "\n"
       end
       puts ""
       puts commandParser.options.summarize
@@ -268,11 +270,13 @@ class CommandParser
 
   # Holds the registered commands
   attr_reader :commands
+  attr_reader :default
 
   def initialize
     @options = OptionParser.new
     @commands = {}
     @default = nil
+    @parsed = {}
   end
 
   # If called with a block, this method yields the global options of the +CommandParser+. If no
@@ -306,22 +310,29 @@ class CommandParser
   def parse( args ); parse!( args.dup ); end
 
   # Parses the given argument. First it tries to parse global arguments if given. After that the
-  # command name is analyzied and the options for the specific commands parsed. After that the
-  # command is executed by invoking its +execute+ method.
-  def parse!( args )
+  # command name is analyzied and the options for the specific commands parsed. If +execCommand+
+  # is true, the command is executed immediately. If false, the +CommandParser#execute+ has to be
+  # called to execute the command.
+  def parse!( args, execCommand = true )
     @options.order!( args )
-    command = args.shift
-    if command.nil?
+    @parsed[:command] = args.shift
+    if @parsed[:command].nil?
       if @default.nil?
         raise NoCommandGivenError
       else
-        command = @default
+        @parsed[:command] = @default
       end
     else
-      raise InvalidCommandError.new( command ) unless commands.include?( command )
+      raise InvalidCommandError.new( @parsed[:command] ) unless commands.include?( @parsed[:command] )
     end
-    commands[command].options.permute!( args ) unless commands[command].options.nil?
-    commands[command].execute( self, args )
+    commands[@parsed[:command]].options.permute!( args ) unless commands[@parsed[:command]].options.nil?
+    @parsed[:args] = args
+    execute if execCommand
+  end
+
+  # Executes the command. The method +CommandParser#parse!+ has to be called before this one!
+  def execute
+    commands[@parsed[:command]].execute( self, @parsed[:args] ) if @parsed[:command]
   end
 
 end

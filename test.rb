@@ -67,4 +67,5 @@ cmd.add_command TestCommand.new, true
 cmd.add_command SubCommands.new
 cmd.add_command CommandParser::HelpCommand.new
 cmd.add_command CommandParser::VersionCommand.new
-cmd.parse!( ARGV )
+cmd.parse!( ARGV, false )
+cmd.execute
