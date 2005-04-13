@@ -1,32 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="{lang:}">
   <head>
-    <title>CommandParser: {title: }</title>
+    <title>CommandParser: {title:}</title>
     <link href="{relocatable: default.css}" rel="stylesheet" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   </head>
   <body>
-    <div id="header">
-      <h1>{title: }</h1>
-      <h2>cmdparse: an advanced command line parser using optparse which supports commands</h2>
-      <div id="headerbar">
-        <span id="navbar">{navbar: }</span>
-        <span id="languages">{lang: }</span>
-        <div style="clear: both; border-top: 1px solid #58b"></div>
+    <div id="all">
+
+      <div id="header">
+        <table>
+          <tr>
+            <td><img src="{relocatable: logo.png}" alt="Logo" title="Logo" /></td>
+            <td><h1>CommandParser<span style="font-size: 60%"> - an advanced command line parser using optparse which supports commands</span></h1>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <div id="headerbar" class="bar">
+        <span class="left">Navbar: {navbar: }</span>
+        <span class="right">Language: {langbar: }</span>
+        <div style="clear:both"></div>
+      </div>
+
+      <div id="menu">
+        {menu:}
+      </div>
+
+      <div id="body">
+        {content:}
+      </div>
+
+      <div id="footer" class="bar">
+        generated with <em><b><a href="http://webgen.rubyforge.org"><em><b>webgen</b></em></a></b></em> on <b>{date: }</b>
       </div>
     </div>
-
-    <div id="menu">
-      {menu: }
-    </div>
-
-    <div id="body">
-      {content: }
-    </div>
-
-    <div id="footer">
-        generated with <em><b><a href="http://webgen.rubyforge.org">webgen</a></b></em> on <b>{date: }</b>
-    </div>
-
   </body>
 </html>
