@@ -1,0 +1,25 @@
+index.html:
+  en:
+    title: Home
+    inMenu: true
+    directoryName: CommandParser
+    menuOrder: 1
+
+download.html:
+  en:
+    title: Download &amp; Installation
+    inMenu: true
+    menuOrder: 3
+
+features.html:
+  en:
+    title: Features
+    inMenu: true
+    menuOrder: 5
+
+api.html:
+  en:
+    dest: rdoc/index.html
+    title: API Reference
+    menuOrder: 7
+    inMenu: true
