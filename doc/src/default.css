@@ -1,8 +1,8 @@
 /*
-#458A8A -> background
-#408080 -> headings
-#CFE6E6 -> code
-#30BFBF -> other
+#5CB85C -> background
+#408040 -> headings
+#CFE6CF -> code
+#30BF30 -> other
  */
 
   body {
@@ -13,19 +13,19 @@
     color: black;
   }
 
-  h1, h2, h3, h4, h5 { color: #408080}
+  h1, h2, h3, h4, h5 { color: #408040}
 
-  a:visited { color: #408080; }
-  a { color: #458A8A; }
+  a:visited { color: #408040; }
+  a { color: #5CB85C; }
   .bar a { color: white }
   .bar a:visited { color: white }
 
-  #all { background-color: #CFE6E6; }
+  #all { background-color: #CFE6CF; }
 
   #header {
     border-bottom: 1px solid black;
     padding: 1ex;
-    background-color: #458A8A;
+    background-color: #5CB85C;
   }
   #header img {
     padding-right: 5em;
@@ -58,7 +58,7 @@
 	padding: 3px;
 	text-align: center;
 	font-size: 90%;
-    background-color: #30BFBF;
+    background-color: #30BF30;
   }
 
   .left, .right {
@@ -88,7 +88,7 @@
   }
 
   #menu .webgen-menuitem-selected {
-	border-left: 3px solid #408080;
+	border-left: 3px solid #408040;
   }
 
   #menu ul {
@@ -115,11 +115,32 @@
 	letter-spacing: 0.2em;
 	font-size: 150%;
 	font-weight: bold;
-    border-bottom: 1px solid #408080;
+    border-bottom: 1px solid #408040;
   }
 
   .webgen-file {
     padding-left: 10px;
     margin: 0px 10px;
-    border-left: 3px solid #458A8A;
+    border-left: 3px solid #5CB85C;
+  }
+
+  .webgen-picture {
+    text-align: center;
+  }
+
+  .webgen-picture img {
+    border: 1px solid black;
+  }
+
+  .webgen-gallery {
+    text-align: center;
+  }
+
+  .webgen-gallery table {
+    width: 100%;
+  }
+
+  .webgen-gallery table td{
+    text-align: center;
+    border: 1px solid black;
   }
