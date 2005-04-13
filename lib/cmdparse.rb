@@ -91,7 +91,7 @@ end
 #     opt.on("-r", "--require TEST",  "Require the TEST")
 #     opt.on("--delay N", Integer, "Delay test for N seconds before executing")
 #   end
-#   cmd.add_command TestCommand.new
+#   cmd.add_command TestCommand.new, true # sets this command as default command
 #   cmd.add_command CommandParser::HelpCommand.new
 #   cmd.add_command CommandParser::VersionCommand.new
 #   cmd.parse!( ARGV )
@@ -99,11 +99,16 @@ end
 class CommandParser
 
   # The version of the command parser
-  VERSION = [1, 0, 0]
+  VERSION = [1, 0, 1]
 
   # This error is thrown when an invalid command is encountered.
-  class InvalidCommand < OptionParser::ParseError
-    const_set(:Reason, 'invalid command'.freeze)
+  class InvalidCommandError < OptionParser::ParseError
+    const_set( :Reason, 'invalid command'.freeze )
+  end
+
+  # This error is thrown when no command was given and no default command was specified.
+  class NoCommandGivenError < OptionParser::ParseError
+    const_set( :Reason, 'no command given'.freeze )
   end
 
   # Base class for the commands. This class implements all needed methods so that it can be used by
@@ -262,11 +267,12 @@ class CommandParser
   end
 
   # Holds the registered commands
-  attr_reader   :commands
+  attr_reader :commands
 
   def initialize
     @options = OptionParser.new
     @commands = {}
+    @default = nil
   end
 
   # If called with a block, this method yields the global options of the +CommandParser+. If no
@@ -279,24 +285,41 @@ class CommandParser
     end
   end
 
-  # Adds a command to the command list.
-  def add_command( command )
+  # Adds a command to the command list. If the optional parameter +default+ is true, then this
+  # command is used when no command is specified on the command line.
+  def add_command( command, default = false )
     @commands[command.name] = command
+    @default = command.name if default
     command.init( self )
   end
 
+  # Calls +parse+ - implemented to mimic OptionParser
+  def permute( args ); parse( args ); end
+  # Calls +parse!+ - implemented to mimic OptionParser
+  def permute!( args ); parse!( args ); end
+  # Calls +parse+ - implemented to mimic OptionParser
+  def order( args ); parse( args ); end
+  # Calls +parse!+ - implemented to mimic OptionParser
+  def order!( args ); parse!( args ); end
+
   # see CommandParser#parse!
-  def parse( args )
-    parse!( args.dup )
-  end
+  def parse( args ); parse!( args.dup ); end
 
   # Parses the given argument. First it tries to parse global arguments if given. After that the
   # command name is analyzied and the options for the specific commands parsed. After that the
   # command is executed by invoking its +execute+ method.
   def parse!( args )
     @options.order!( args )
-    command = args.shift || 'no command given'
-    raise InvalidCommand.new( command ) unless commands.include?( command )
+    command = args.shift
+    if command.nil?
+      if @default.nil?
+        raise NoCommandGivenError
+      else
+        command = @default
+      end
+    else
+      raise InvalidCommandError.new( command ) unless commands.include?( command )
+    end
     commands[command].options.permute!( args ) unless commands[command].options.nil?
     commands[command].execute( self, args )
   end
