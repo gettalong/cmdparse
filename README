@@ -36,7 +36,7 @@ You can build the documentation by invoking
  $ rake doc
 
 This builds the API and the additional documentation. The additional documentation needs webgen
-0.3.1 (webgen.rubyforge.org) for building.
+>=0.3.2 (webgen.rubyforge.org) for building.
 
 
 = Example
