@@ -12,7 +12,13 @@ Have a look around the site!
 
 h2. News
 
-*cmdparse 1.0.1 released!!!*
+<b>cmdparse 1.0.2 released!!!</b>
+
+Changes:
+
+* splitted parsing of the arguments and executing the command into two methods
+
+<b>cmdparse 1.0.1 released!!!</b>
 
 Changes:
 
