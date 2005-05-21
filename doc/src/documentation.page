@@ -1,0 +1,91 @@
+---
+title: Documentation
+inMenu: true
+orderInfo: 6
+---
+h2. Documentation
+
+The <a href="{relocatable: /rdoc/index.html}">API reference</a> provides information on how to use
+@cmdparse@. Here is only a short tutorial which shows most of the features.
+
+h2. Tutorial
+
+<b>The complete code for this example can be found in the file @test.rb@ of the @cmdparse@
+package!</b>
+
+h3. Require statements
+
+Create a new new file and write the necessary @require@ statements.
+
+<notextile>{extract: {file: ../test.rb, lines: !ruby/range 4..5}}</notextile>
+
+h3. The @CommandParser@ class
+
+Next we will define our basic @CommandParser@ by defining the name of the program, its version and
+release number and the global options. These global options are always used by @CommandParser@ and
+have to be specified on the command line before the name of a command. The global options and, for
+the matter, the local command specific options are instances of the @OptionParser@ class which is
+available in the Ruby Standard library.
+
+<notextile>{extract: {file: ../test.rb, lines: !ruby/range 29..37}}</notextile>
+
+Now we only have to tell the program to use our newly defined class to process the command line
+arguments.
+
+<notextile>{extract: {file: ../test.rb, lines: !ruby/range 41..42}}</notextile>
+
+The @#parse!@ method of our @CommandParser@ object parses the given array of options (the second
+argument specifies if a command should be executed immediately or if the options should only be
+parsed). The @#execute@ method then executes the command.
+
+The program can be executed now but won't be useful as we have not specified any commands. It will
+always produce error messages.
+
+h3. Defining commands
+
+So, as we have defined our @CommandParser@ object, we need to add some commands to it. First, we
+will add two predefined commands, namely the @help@ and the @version@ command.
+
+<notextile>{extract: {file: ../test.rb, lines: !ruby/range 39..40}}</notextile>
+
+That was easy! Now you can execute the program and specify the commands @help@ or @version@.
+However, we want the program to do something "useful". Therefore we define a new command.
+
+<notextile>{extract: {file: ../test.rb, lines: !ruby/range 8..27}}</notextile>
+
+The command specific options are initialized in the @#initialize@ method. These options are used by
+our @CommandParser@ object if, and only if, the command is specified on the command line. The
+@#description@ method describes the command and the @#execute@ is called when the command needs to
+be executed.
+
+This command has to be added to our @CommandParser@ object.
+
+<notextile>{extract: {file: ../test.rb, lines: !ruby/range 38..38}}</notextile>
+
+By providing @true@ as second argument, we specifiy that the @test@ command should be the default
+command which gets invoked when no command is specified on the command line. Only one command can be
+specified as default command!
+
+h3. Running the program
+
+That's all! You can run the program now and have a look at the output which differs depending on
+which arguments you choose.
+
+*Notice:* Options, command name and additional arguments have to be in a certain order on the
+command line:
+
+# [optional] Global options
+# Command name
+# [optional] Command specific options
+# [optional] Additional arguments
+
+So, a typical invokation looks like this:
+
+<pre>
+  $ ruby test.rb -r myfunc test -a arg1 arg2 arg3
+</pre>
+
+* <tt>-r myfunc</tt> is a global option
+* @test@ is the command name
+* @-a@ is a command specific option (only available for the test command)
+* <tt>arg1 arg2 arg3</tt> are additional arguments

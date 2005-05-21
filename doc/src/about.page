@@ -1,0 +1,20 @@
+---
+title: About
+inMenu: true
+orderInfo: 2
+---
+h2. About @cmdparse@
+
+Some new programs use a "command style" command line. Examples for such programs are the "svn"
+program from Subversion and the "gem" program from Rubygems. The standard Ruby distribution has no
+library to create programs that use such a command line interface.
+
+This library, cmdparse, can be used to create such a command line interface. Internally it uses
+optparse to parse options and it provides a nice API for specifying commands.
+
+h2. Author
+
+* *Thomas Leitner*
+* Web: "http://cmdparse.rubyforge.org":http://cmdparse.rubyforge.org
+* e-Mail: "t_leitner@gmx.at":mailto:t_leitner@gmx.at
+* GPG Key-Id: 0xD942E7F6

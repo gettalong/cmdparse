@@ -70,9 +70,9 @@ end
 CLOBBER << "doc/output"
 desc "Builds the documentation"
 task :doc => [:rdoc] do
-  Dir.chdir("doc")
-  sh "webgen -V 3"
-  Dir.chdir("..")
+  chdir "doc" do
+    sh "webgen"
+  end
 end
 
 rd = Rake::RDocTask.new do |rdoc|
@@ -94,6 +94,7 @@ PKG_FILES = FileList.new( [
                             'README',
                             'Rakefile',
                             'ChangeLog',
+                            'test.rb',
                             'VERSION',
                             'lib/**/*.rb',
                             'doc/**/*'

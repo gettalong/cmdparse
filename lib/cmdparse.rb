@@ -27,6 +27,9 @@ require 'optparse'
 # Some extension to the standard option parser class
 class OptionParser
 
+  Officious.delete( 'version' )
+  Officious.delete( 'help' )
+
   # Returns the <tt>@banner</tt> value. Needed because the method <tt>OptionParser#banner</tt> does
   # not return the internal value of <tt>@banner</tt> but a modified one.
   def get_banner
@@ -99,7 +102,7 @@ end
 class CommandParser
 
   # The version of the command parser
-  VERSION = [1, 0, 2]
+  VERSION = [1, 0, 3]
 
   # This error is thrown when an invalid command is encountered.
   class InvalidCommandError < OptionParser::ParseError
@@ -216,7 +219,7 @@ class CommandParser
       width = commandParser.commands.keys.max {|a,b| a.length <=> b.length }.length
       commandParser.commands.sort.each do |name, command|
         print commandParser.options.summary_indent + name.ljust( width + 4 ) + command.description
-        print " (default)" if name == commandParser.default
+        print " (=default command)" if name == commandParser.default
         print "\n"
       end
       puts ""
@@ -268,15 +271,23 @@ class CommandParser
 
   end
 
-  # Holds the registered commands
+  # Holds the registered commands.
   attr_reader :commands
+
+  # Returns the name of the default command.
   attr_reader :default
 
-  def initialize
+  # Are Exceptions be handled gracefully? I.e. by printing error message and help screen?
+  attr_reader :handleExceptions
+
+  # Create a new CommandParser object. The optional argument +handleExceptions+ specifies if the
+  # object should handle exceptions gracefully.
+  def initialize( handleExceptions = false )
     @options = OptionParser.new
     @commands = {}
     @default = nil
     @parsed = {}
+    @handleExceptions = handleExceptions
   end
 
   # If called with a block, this method yields the global options of the +CommandParser+. If no
@@ -314,18 +325,30 @@ class CommandParser
   # is true, the command is executed immediately. If false, the +CommandParser#execute+ has to be
   # called to execute the command.
   def parse!( args, execCommand = true )
-    @options.order!( args )
-    @parsed[:command] = args.shift
-    if @parsed[:command].nil?
-      if @default.nil?
-        raise NoCommandGivenError
+    # parse global options
+    begin
+      @options.order!( args )
+      @parsed[:command] = args.shift
+      if @parsed[:command].nil?
+        if @default.nil?
+          raise NoCommandGivenError
+        else
+          @parsed[:command] = @default
+        end
       else
-        @parsed[:command] = @default
+        raise InvalidCommandError.new( @parsed[:command] ) unless commands.include?( @parsed[:command] )
       end
-    else
-      raise InvalidCommandError.new( @parsed[:command] ) unless commands.include?( @parsed[:command] )
+    rescue OptionParser::ParseError => e
+      handle_exception( e, :global )
     end
-    commands[@parsed[:command]].options.permute!( args ) unless commands[@parsed[:command]].options.nil?
+
+    # parse local options
+    begin
+      commands[@parsed[:command]].options.permute!( args ) unless commands[@parsed[:command]].options.nil?
+    rescue OptionParser::ParseError => e
+      handle_exception( e, :local )
+    end
+
     @parsed[:args] = args
     execute if execCommand
   end
@@ -333,6 +356,17 @@ class CommandParser
   # Executes the command. The method +CommandParser#parse!+ has to be called before this one!
   def execute
     commands[@parsed[:command]].execute( self, @parsed[:args] ) if @parsed[:command]
+  end
+
+  private
+
+  def handle_exception( exception, context )
+    raise unless @handleExceptions
+    s = (context == :global ? "global" : "command specific")
+    puts "Error parsing #{s} options:\n    " + exception.message
+    puts
+    commands['help'].execute( self, (context == :global ? [] : [@parsed[:command]]) ) if commands['help']
+    exit
   end
 
 end

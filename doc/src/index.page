@@ -1,39 +1,30 @@
 ---
 title: HomePage
 inMenu: true
-directoryName: CommandParser
+directoryName: cmdparse
 menuOrder: 1
 ---
 h2. Welcome
 
-... to the homepage of _*CommandParser*_, an advanced command line parser.
+... to the homepage of _*cmdparse*_, an advanced command line parser.
 
 Have a look around the site!
 
 h2. News
 
-<b>cmdparse 1.0.2 released!!!</b>
+<b>2005-04-21 cmdparse 1.0.2 released!!!</b>
 
 Changes:
 
 * splitted parsing of the arguments and executing the command into two methods
 
-<b>cmdparse 1.0.1 released!!!</b>
+<b>2005-04-13 cmdparse 1.0.1 released!!!</b>
 
 Changes:
 
 * Improved HelpCommand: the global options -h and --help take an optional command name now
 * Possibility to define a default command which is used when no command was specified
 * A @NoCommandGivenError@ is thrown when no command on the CLI and no default command was specified
-
-h2. Description
-
-Some new programs use a "command style" command line. Examples for such programs are the "svn"
-program from Subversion and the "gem" program from Rubygems. The standard Ruby distribution has no
-library to create programs that use such a command line interface.
-
-This library, cmdparse, can be used to create such a command line interface. Internally it uses
-optparse to parse options and it provides a nice API for specifying commands.
 
 h2. And so
 

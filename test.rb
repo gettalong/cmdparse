@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-
+# if something is changed here -> change line numbers in doc/src/documentation.page
 $:.unshift "lib"
 require 'cmdparse'
 require 'ostruct'
@@ -21,50 +21,21 @@ class TestCommand < CommandParser::Command
     "Executes various tests"
   end
   def execute( commandParser, args )
-    puts "Test: "+ args.inspect
-    puts @internal.inspect
+    puts "Additional arguments: "+ args.inspect
+    puts "Internal values: " + @internal.inspect
   end
 end
 
-class SubCommand < CommandParser::Command
-  def initialize
-    super('testing')
-    options.on("-s", "tests")
-  end
-  def description
-    "Testing method"
-  end
-  def execute( commandParser, args )
-    puts "Processing command testing with <#{args.join(' ')}>"
-  end
-end
-
-class SubCommands < CommandParser::Command
-  def initialize
-    super('other')
-    @options = CommandParser.new
-    @options.add_command SubCommand.new
-    @options.add_command CommandParser::HelpCommand.new
-  end
-  def description
-    "Provides additional commands"
-  end
-  def execute( commandParser, args )
-    puts "Sub command finished: "
-  end
-end
-
-cmd = CommandParser.new
+cmd = CommandParser.new(true)
 cmd.options do |opt|
-  opt.program_name = "testProgram"
+  opt.program_name = "test.rb"
   opt.version = [0, 1, 0]
   opt.release = "1.0"
   opt.separator "Global options:"
-  opt.on("-r", "--require TEST",  "Require the TEST")
-  opt.on("--delay N", Integer, "Delay test for N seconds before executing")
+  opt.on("-r", "--require TEST",  "Require the TEST") {|t| puts "required: #{t}"}
+  opt.on("--delay N", Integer, "Delay test for N seconds before executing") {|d| puts "delay: #{d}"}
 end
 cmd.add_command TestCommand.new, true
-cmd.add_command SubCommands.new
 cmd.add_command CommandParser::HelpCommand.new
 cmd.add_command CommandParser::VersionCommand.new
 cmd.parse!( ARGV, false )

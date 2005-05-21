@@ -144,3 +144,8 @@
     text-align: center;
     border: 1px solid black;
   }
+
+  table.cmdparse-example td {
+    border: 1px solid #408040;
+    background-color: white;
+  }

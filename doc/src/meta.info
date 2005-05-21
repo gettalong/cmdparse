@@ -1,6 +1,5 @@
 api.html:
-  en:
     dest: rdoc/index.html
     title: API Reference
-    menuOrder: 7
+    orderInfo: 7
     inMenu: true
