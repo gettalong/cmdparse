@@ -12,6 +12,13 @@ Have a look around the site!
 
 h2. News
 
+<b>2005-06-09 cmdparse 1.0.3 released!!!</b>
+
+Changes:
+
+* added optional graceful exception handling
+
+
 <b>2005-04-21 cmdparse 1.0.2 released!!!</b>
 
 Changes:
