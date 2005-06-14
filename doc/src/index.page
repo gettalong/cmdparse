@@ -12,6 +12,14 @@ Have a look around the site!
 
 h2. News
 
+<b>2005-??-?? cmdparse 1.0.4 released!!!</b>
+
+Changes:
+
+* fix for older ruby versions
+* fixed bug where exception was not caught
+
+
 <b>2005-06-09 cmdparse 1.0.3 released!!!</b>
 
 Changes:
