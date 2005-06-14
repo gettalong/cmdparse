@@ -27,8 +27,13 @@ require 'optparse'
 # Some extension to the standard option parser class
 class OptionParser
 
-  Officious.delete( 'version' )
-  Officious.delete( 'help' )
+  if const_defined?( 'Officious' )
+    Officious.delete( 'version' )
+    Officious.delete( 'help' )
+  else
+    DefaultList.long.delete( 'version' )
+    DefaultList.long.delete( 'help' )
+  end
 
   # Returns the <tt>@banner</tt> value. Needed because the method <tt>OptionParser#banner</tt> does
   # not return the internal value of <tt>@banner</tt> but a modified one.
@@ -102,7 +107,7 @@ end
 class CommandParser
 
   # The version of the command parser
-  VERSION = [1, 0, 3]
+  VERSION = [1, 0, 4]
 
   # This error is thrown when an invalid command is encountered.
   class InvalidCommandError < OptionParser::ParseError
@@ -350,12 +355,17 @@ class CommandParser
     end
 
     @parsed[:args] = args
+
     execute if execCommand
   end
 
   # Executes the command. The method +CommandParser#parse!+ has to be called before this one!
   def execute
-    commands[@parsed[:command]].execute( self, @parsed[:args] ) if @parsed[:command]
+    begin
+      commands[@parsed[:command]].execute( self, @parsed[:args] ) if @parsed[:command]
+    rescue OptionParser::ParseError => e
+      handle_exception( e, :local )
+    end
   end
 
   private
