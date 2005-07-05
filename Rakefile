@@ -130,13 +130,13 @@ else
 
     s.has_rdoc = true
     s.extra_rdoc_files = rd.rdoc_files.reject do |fn| fn =~ /\.rb$/ end.to_a
-    s.rdoc_options = ['--line-numbers', '-m README']
+    s.rdoc_options = ['--line-numbers', '-m', 'README']
 
     #### Author and project details
 
     s.author = "Thomas Leitner"
     s.email = "t_leitner@gmx.at"
-    s.homepage = "cmdparse.rubyforge.org"
+    s.homepage = "http://cmdparse.rubyforge.org"
     s.rubyforge_project = "cmdparse"
   end
 

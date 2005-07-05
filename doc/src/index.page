@@ -12,6 +12,13 @@ Have a look around the site!
 
 h2. News
 
+<b>2005-07-05 cmdparse 1.0.5 released!!!</b>
+
+Changes:
+
+* added possibility to parse global options, command and local options separately
+
+
 <b>2005-06-16 cmdparse 1.0.4 released!!!</b>
 
 Changes:

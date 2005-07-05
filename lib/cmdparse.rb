@@ -107,7 +107,7 @@ end
 class CommandParser
 
   # The version of the command parser
-  VERSION = [1, 0, 4]
+  VERSION = [1, 0, 5]
 
   # This error is thrown when an invalid command is encountered.
   class InvalidCommandError < OptionParser::ParseError
@@ -313,6 +313,33 @@ class CommandParser
     command.init( self )
   end
 
+  # Parses the global options.
+  def parse_global_options!( args )
+    @options.order!( args )
+  end
+
+  # Parses the command.
+  def parse_command!( args )
+    @parsed[:command] = args.shift
+    if @parsed[:command].nil?
+      if @default.nil?
+        raise NoCommandGivenError
+      else
+        @parsed[:command] = @default
+      end
+    else
+      raise InvalidCommandError.new( @parsed[:command] ) unless commands.include?( @parsed[:command] )
+    end
+  end
+
+  # Parses the local options. Attention: The command has to be parsed (invoke method
+  # +parse_command!+) before this method can be invoked.
+  def parse_local_options!( args )
+    if @parsed[:command]
+      commands[@parsed[:command]].options.permute!( args ) unless commands[@parsed[:command]].options.nil?
+    end
+  end
+
   # Calls +parse+ - implemented to mimic OptionParser
   def permute( args ); parse( args ); end
   # Calls +parse!+ - implemented to mimic OptionParser
@@ -321,41 +348,29 @@ class CommandParser
   def order( args ); parse( args ); end
   # Calls +parse!+ - implemented to mimic OptionParser
   def order!( args ); parse!( args ); end
-
   # see CommandParser#parse!
   def parse( args ); parse!( args.dup ); end
 
   # Parses the given argument. First it tries to parse global arguments if given. After that the
-  # command name is analyzied and the options for the specific commands parsed. If +execCommand+
-  # is true, the command is executed immediately. If false, the +CommandParser#execute+ has to be
-  # called to execute the command.
-  def parse!( args, execCommand = true )
-    # parse global options
+  # command name is analyzied and the options for the specific commands parsed. If +execCommand+ is
+  # true, the command is executed immediately. If false, the <tt>CommandParser#execute</tt> has to
+  # be called to execute the command. The optional +parse+ parameter specifies what should be
+  # parsed. If <tt>:global</tt> is included in the +parse+ array, global options are parsed; if
+  # <tt>:command</tt> is included, the command is parsed and if <tt>:local</tt> is included, the
+  # local options are parsed.
+  def parse!( args, execCommand = true, parse = [:global, :command, :local] )
     begin
-      @options.order!( args )
-      @parsed[:command] = args.shift
-      if @parsed[:command].nil?
-        if @default.nil?
-          raise NoCommandGivenError
-        else
-          @parsed[:command] = @default
-        end
-      else
-        raise InvalidCommandError.new( @parsed[:command] ) unless commands.include?( @parsed[:command] )
-      end
-    rescue OptionParser::ParseError => e
-      handle_exception( e, :global )
-    end
+      context = :global
+      parse_global_options!( args ) if parse.include?( :global )
+      parse_command!( args ) if parse.include?( :command )
 
-    # parse local options
-    begin
-      commands[@parsed[:command]].options.permute!( args ) unless commands[@parsed[:command]].options.nil?
+      context = :local
+      parse_local_options!( args ) if parse.include?( :local )
     rescue OptionParser::ParseError => e
-      handle_exception( e, :local )
+      handle_exception( e, context )
     end
 
     @parsed[:args] = args
-
     execute if execCommand
   end
 
