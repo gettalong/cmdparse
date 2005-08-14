@@ -10,7 +10,15 @@ program from Subversion and the "gem" program from Rubygems. The standard Ruby d
 library to create programs that use such a command line interface.
 
 This library, cmdparse, can be used to create such a command line interface. Internally it uses
-optparse to parse options and it provides a nice API for specifying commands.
+optparse or any other option parser library to parse options and it provides a nice API for
+specifying commands and subcommands.
+
+A typical command line for a program which uses commands looks like this:
+
+<pre>
+  $ net --verbose ipaddr add 192.168.0.1 193.150.0.1
+</pre>
+
 
 h2. Author
 

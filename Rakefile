@@ -2,7 +2,7 @@
 #
 # $Id$
 #
-# cmdparse: an advanced command line parser using optparse which supports commands
+# cmdparse: advanced command line parser supporting commands
 # Copyright (C) 2004 Thomas Leitner
 #
 # This program is free software; you can redistribute it and/or modify it under the terms of the GNU
@@ -32,10 +32,11 @@ require 'rake/testtask'
 
 # General actions  ##############################################################
 
-require 'lib/cmdparse'
+$:.unshift 'lib'
+require 'cmdparse'
 
 PKG_NAME = "cmdparse"
-PKG_VERSION = CommandParser::VERSION.join( '.' )
+PKG_VERSION = CmdParse::VERSION.join( '.' )
 PKG_FULLNAME = PKG_NAME + "-" + PKG_VERSION
 
 SRC_RB = FileList['lib/**/*.rb']
@@ -78,8 +79,7 @@ end
 rd = Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_dir = 'doc/output/rdoc'
   rdoc.title    = PKG_NAME
-  rdoc.options << '--line-numbers' << '--inline-source' << '-m README'
-  rdoc.rdoc_files.include( 'README' )
+  rdoc.options << '--line-numbers' << '--inline-source' << '-m CmdParse::CommandParser'
   rdoc.rdoc_files.include( 'lib/**/*.rb' )
 end
 
@@ -112,11 +112,11 @@ else
 
     s.name = PKG_NAME
     s.version = PKG_VERSION
-    s.summary = "An advanced command line parser using optparse which supports commands"
+    s.summary = "Advanced command line parser supporting commands"
     s.description = <<-EOF
-       cmdparse extends the default option parser 'optparse' by adding
-       support for commands. Programs that use such command line interfaces
-       are, for example, subversion's 'svn' or Rubygem's 'gem' program.
+       cmdparse provides classes for parsing commands on the command line; command line options
+       are parsed using optparse or any other option parser implementation. Programs that use
+       such command line interfaces are, for example, subversion's 'svn' or Rubygem's 'gem' program.
     EOF
 
     #### Dependencies, requirements and files
@@ -130,7 +130,7 @@ else
 
     s.has_rdoc = true
     s.extra_rdoc_files = rd.rdoc_files.reject do |fn| fn =~ /\.rb$/ end.to_a
-    s.rdoc_options = ['--line-numbers', '-m', 'README']
+    s.rdoc_options = ['--line-numbers', '-m', 'CmdParse::CommandParser']
 
     #### Author and project details
 

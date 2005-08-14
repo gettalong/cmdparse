@@ -6,11 +6,22 @@ menuOrder: 1
 ---
 h2. Welcome
 
-... to the homepage of _*cmdparse*_, an advanced command line parser.
+... to the homepage of _*cmdparse*_, an advanced command line parser supporting commands.
 
 Have a look around the site!
 
 h2. News
+
+<b>2005-??-?? cmdparse 2.0.0 released!!!</b>
+
+This version is not compatible to previous versions of cmdparse as there have been major changes in
+the API. However, updating your code to use the new API is very easy!
+
+Changes:
+
+* Commands can now have subcommands which can have subcommands which can have subcommands...
+* No need to implement a whole new class for simple commands anymore
+* Default option parser library is @optparse@, however, any option parser library can be used after writing a small wrapper
 
 <b>2005-07-05 cmdparse 1.0.5 released!!!</b>
 

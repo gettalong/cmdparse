@@ -9,26 +9,26 @@ program from Subversion and the "gem" program from Rubygems. The standard Ruby d
 library to create programs that use such a command line interface.
 
 This library, cmdparse, can be used to create such a command line interface. Internally it uses
-optparse to parse options and it provides a nice API for specifying commands.
+optparse or any other option parser library to parse options and it provides a nice API for
+specifying commands.
 
 
 = Dependencies
 
- optparse - part of the standard Ruby 1.8 distribution, so nothing to do here
-
+ none
 
 = Installation
 
+The preferred way of installing cmdparse is via RubyGems:
+ $ gem install cmdparse
+
+If you do not have RubyGems installed, but Rake, you can use the following command:
+ $ rake install
+
+If you have neither RubyGems nor Rake, use these commands:
  $ ruby setup.rb config
  $ ruby setup.rb setup
  $ ruby setup.rb install
-
-Or you could use Rake and substitute the above commands with this:
- $ rake install
-
-Or you could install cmdparse the "GEM way":
- $ gem install cmdparse
-
 
 = Documentation
 
@@ -36,12 +36,12 @@ You can build the documentation by invoking
  $ rake doc
 
 This builds the API and the additional documentation. The additional documentation needs webgen
->=0.3.4 (webgen.rubyforge.org) for building.
+>=0.3.5 (webgen.rubyforge.org) for building.
 
 
 = Example
 
-There is an example of how to use cmdparse in the +test.rb+ file.
+There is an example of how to use cmdparse in the +net.rb+ file.
 
 
 = Contact

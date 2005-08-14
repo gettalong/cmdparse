@@ -3,7 +3,7 @@
 #
 # $Id$
 #
-# cmdparse: an advanced command line parser using optparse which supports commands
+# cmdparse: advanced command line parser supporting commands
 # Copyright (C) 2004 Thomas Leitner
 #
 # This program is free software; you can redistribute it and/or modify it under the terms of the GNU
@@ -19,380 +19,408 @@
 #
 #++
 #
-# Look at the +CommandParser+ class for details and an example.
-#
 
-require 'optparse'
 
-# Some extension to the standard option parser class
-class OptionParser
+#  Namespace module for cmdparse.
+module CmdParse
 
-  if const_defined?( 'Officious' )
-    Officious.delete( 'version' )
-    Officious.delete( 'help' )
-  else
-    DefaultList.long.delete( 'version' )
-    DefaultList.long.delete( 'help' )
+  # The version of this cmdparse implemention
+  VERSION = [2, 0, 0]
+
+
+  # Base class for all cmdparse errors.
+  class ParseError < RuntimeError
+
+    # Sets the reason for a subclass.
+    def self.reason( reason, has_arguments = true )
+      (@@reason ||= {})[self] = [reason, has_arguments]
+    end
+
+    # Returns the reason plus the message.
+    def message
+      data = @@reason[self.class] || ['Unknown error', true]
+      data[0] + (data[1] ? ": " + super : '')
+    end
+
   end
-
-  # Returns the <tt>@banner</tt> value. Needed because the method <tt>OptionParser#banner</tt> does
-  # not return the internal value of <tt>@banner</tt> but a modified one.
-  def get_banner
-    @banner
-  end
-
-  # Returns the <tt>@program_name</tt> value. Needed because the method
-  # <tt>OptionParser#program_name</tt> does not return the internal value of <tt>@program_name</tt>
-  # but a modified one.
-  def get_program_name
-    @program_name
-  end
-
-end
-
-
-# = CommandParser
-#
-# == Introduction
-#
-# +CommandParser+ is a class for analyzing the command line of a program. It uses the standard
-# +OptionParser+ class internally for parsing the options and additionally allows the
-# specification of commands. Programs which use commands as part of their command line interface
-# are, for example, Subversion's +svn+ program and Rubygem's +gem+ program.
-#
-# == Example
-#
-#   require 'cmdparse'
-#   require 'ostruct'
-#
-#   class TestCommand < CommandParser::Command
-#
-#     def initialize
-#       super('test')
-#       @internal = OpenStruct.new
-#       @internal.function = nil
-#       @internal.audible = false
-#       options.separator "Options:"
-#       options.on("-t", "--test FUNCTION", "Test only FUNCTION") do |func|
-#         @internal.function = func
-#       end
-#       options.on("-a", "--[no-]audible", "Run audible") { |@internal.audible| }
-#     end
-#
-#     def description
-#       "Executes various tests"
-#     end
-#
-#     def execute( commandParser, args )
-#       puts "Test: "+ args.inspect
-#       puts @internal.inspect
-#     end
-#
-#   end
-#
-#   cmd = CommandParser.new
-#   cmd.options do |opt|
-#     opt.program_name = "testProgram"
-#     opt.version = [0, 1, 0]
-#     opt.release = "1.0"
-#     opt.separator "Global options:"
-#     opt.on("-r", "--require TEST",  "Require the TEST")
-#     opt.on("--delay N", Integer, "Delay test for N seconds before executing")
-#   end
-#   cmd.add_command TestCommand.new, true # sets this command as default command
-#   cmd.add_command CommandParser::HelpCommand.new
-#   cmd.add_command CommandParser::VersionCommand.new
-#   cmd.parse!( ARGV )
-#
-class CommandParser
-
-  # The version of the command parser
-  VERSION = [1, 0, 5]
 
   # This error is thrown when an invalid command is encountered.
-  class InvalidCommandError < OptionParser::ParseError
-    const_set( :Reason, 'invalid command'.freeze )
+  class InvalidCommandError < ParseError
+    reason 'Invalid command'
+  end
+
+  # This error is thrown when an invalid argument is encountered.
+  class InvalidArgumentError < ParseError
+    reason 'Invalid argument'
+  end
+
+  # This error is thrown when an invalid option is encountered.
+  class InvalidOptionError < ParseError
+    reason 'Invalid option'
   end
 
   # This error is thrown when no command was given and no default command was specified.
-  class NoCommandGivenError < OptionParser::ParseError
-    const_set( :Reason, 'no command given'.freeze )
+  class NoCommandGivenError < ParseError
+    reason 'No command given', false
   end
 
+  # This error is thrown when a command is added to another command which does not support commands.
+  class TakesNoCommandError < ParseError
+    reason 'This command takes no other commands', false
+  end
+
+
+  # Base class for all parser wrappers.
+  class ParserWrapper
+
+    # Returns the parser instance for the object and, if a block is a given, yields the instance.
+    def instance
+      yield @instance if block_given?
+      @instance
+    end
+
+    # Parses the arguments in order, i.e. stops at the first non-option argument, and returns all
+    # remaining arguments.
+    def order( args )
+      raise InvalidOptionError.new( args[0] ) if args[0] =~ /^-/
+      args
+    end
+
+    # Permutes the arguments so that all options anywhere on the command line are parsed and the
+    # remaining non-options are returned.
+    def permute( args )
+      raise InvalidOptionError.new( args[0] ) if args.any? {|a| a =~ /^-/}
+      args
+    end
+
+    # Returns a summary string of the options.
+    def summarize
+      ""
+    end
+
+  end
+
+  # Require default option parser wrapper
+  require 'cmdparse/wrappers/optparse'
+
+
   # Base class for the commands. This class implements all needed methods so that it can be used by
-  # the +OptionParser+ class.
+  # the +CommandParser+ class.
   class Command
 
     # The name of the command
     attr_reader :name
 
-    # The command line options, an instance of +OptionParser+.
-    attr_reader :options
+    # A short description of the command.
+    attr_accessor :short_desc
 
-    # Initializes the command and assignes it a +name+.
-    def initialize( name )
+    # A detailed description of the command
+    attr_accessor :description
+
+    # The wrapper for parsing the command line options.
+    attr_accessor :options
+
+    # Returns the name of the default command.
+    attr_reader :default_command
+
+    # Sets or returns the super command of this command. The super command is either a +Command+
+    # instance for normal commands or a +CommandParser+ instance for the root command.
+    attr_accessor :super_command
+
+    # Returns the list of commands for this command.
+    attr_reader :commands
+
+    # Initializes the command called +name+. The parameter +has_commands+ specifies if this command
+    # takes other commands as argument.
+    def initialize( name, has_commands )
       @name = name
-      @options = OptionParser.new
+      @options = ParserWrapper.new
+      @has_commands = has_commands
+      @commands = {}
+      @default_command = nil
     end
 
-    # For sorting commands by name
+    # Returns +true+ if this command supports sub commands.
+    def has_commands?
+      @has_commands
+    end
+
+    # Adds a command to the command list if this command takes other commands as argument. If the
+    # optional parameter +default+ is true, then this command is used when no command is specified
+    # on the command line.
+    def add_command( command, default = false )
+      raise TakesNoCommandError.new( @name ) if !has_commands?
+      @commands[command.name] = command
+      @default_command = command.name if default
+      command.super_command = self
+      command.init
+    end
+
+    # For sorting commands by name.
     def <=>( other )
       @name <=> other.name
     end
 
-    # Should be overridden by specific implementations. This method is called after the command is
-    # added to a +CommandParser+ instance.
-    def init( commandParser )
+    # Returns the +CommandParser+ instance for this command or +nil+ if this command was not
+    # assigned to a +CommandParser+ instance.
+    def commandparser
+      cmd = super_command
+      cmd = cmd.super_command while !cmd.nil? && !cmd.kind_of?( CommandParser )
+      cmd
+    end
+
+    # Returns a list of super commands, ie.:
+    #   [command, super_command, super_super_command, ...]
+    def super_commands
+      cmds = []
+      cmd = self
+      while !cmd.nil? && !cmd.super_command.kind_of?( CommandParser )
+        cmds << cmd
+        cmd = cmd.super_command
+      end
+      cmds
+    end
+
+    # This method is called when the command is added to a +Command+ instance.
+    def init; end
+
+    # Set the given +block+ as execution block. See also: +execute+.
+    def set_execution_block( &block )
+      @exec_block = block
+    end
+
+    # Invokes the block set by +set_execution_block+. This method is called by the +CommandParser+
+    # instance if this command was specified on the command line.
+    def execute( args )
+      @exec_block.call( args )
+    end
+
+    # Defines the usage line for the command.
+    def usage
+      tmp = "Usage: #{commandparser.program_name}"
+      tmp << " [options] " if !commandparser.options.instance_of?( ParserWrapper )
+      tmp << super_commands.reverse.collect do |c|
+        t = c.name
+        t << " [options]" if !c.options.instance_of?( ParserWrapper )
+        t
+      end.join(' ')
+      tmp << (has_commands? ? " COMMAND [options] [ARGS]" : " [ARGS]")
     end
 
     # Default method for showing the help for the command.
-    def show_help( commandParser )
-      @options.program_name = commandParser.options.program_name if @options.get_program_name.nil?
-      puts "#{@name}: #{description}"
+    def show_help
+      puts "#{@name}: #{short_desc}"
+      puts description if description
+      puts
       puts usage
-      puts ""
-      puts options.summarize
+      puts
+      if has_commands?
+        list_commands
+        puts
+      end
+      unless (summary = options.summarize).empty?
+        puts summary
+        puts
+      end
     end
 
-    # Should be overridden by specific implementations. Defines the description of the command.
-    def description
-      '<no description given>'
-    end
+    #######
+    private
+    #######
 
-    # Defines the usage line for the command. Can be overridden if a more specific usage line is needed.
-    def usage
-      "Usage: #{@options.program_name} [global options] #{@name} [options] args"
-    end
-
-    # Must be overridden by specific implementations. This method is called by the +CommandParser+
-    # if this command was specified on the command line.
-    def execute( commandParser, args )
-      raise NotImplementedError
+    def list_commands( level = 1, command = self )
+      puts "Available commands:" if level == 1
+      command.commands.sort.each do |name, cmd|
+        print "  "*level + name.ljust( 15 ) + cmd.short_desc.to_s
+        print " (=default command)" if name == command.default_command
+        print "\n"
+        list_commands( level + 1, cmd ) if cmd.has_commands?
+      end
     end
 
   end
 
 
-  # The default help command.It adds the options "-h" and "--help" to the global +CommandParser+
-  # options. When specified on the command line, it can show the main help or an individual command
-  # help.
+  # The default help command. It adds the options "-h" and "--help" to the global options of the
+  # associated +CommandParser+. When the command is specified on the command line, it can show the
+  # main help or individual command help.
   class HelpCommand < Command
 
     def initialize
-      super( 'help' )
+      super( 'help', false )
+      self.short_desc = 'Provide help for individual commands'
+      self.description = 'This command prints the program help if no arguments are given. ' \
+      'If one or more command names are given as arguments, these arguments are interpreted ' \
+      'as a hierachy of commands and the help for the right most command is show.'
     end
 
-    def init( commandParser )
-      commandParser.options do |opt|
-        opt.on_tail( "-h", "--help [command]", "Show help" ) do |cmd|
-          execute( commandParser, cmd.nil? ? [] : [cmd] )
+    def init
+      case commandparser.main_command.options
+      when OptionParserWrapper
+        commandparser.main_command.options.instance do |opt|
+          opt.on_tail( "-h", "--help", "Show help" ) do
+            execute( [] )
+          end
         end
       end
     end
 
-    def description
-      'Provides help for the individual commands'
-    end
-
     def usage
-      "Usage: #{@options.program_name} help COMMAND"
+      "Usage: #{commandparser.program_name} help [COMMAND SUBCOMMAND ...]"
     end
 
-    def execute( commandParser, args )
+    def execute( args )
       if args.length > 0
-        if commandParser.commands.include?( args[0] )
-          commandParser.commands[args[0]].show_help( commandParser )
+        cmd = commandparser.main_command
+        arg = args.shift
+        while !arg.nil? && cmd.commands.keys.include?( arg )
+          cmd = cmd.commands[arg]
+          arg = args.shift
+        end
+        if arg.nil?
+          cmd.show_help
         else
-          raise OptionParser::InvalidArgument, args[0]
+          raise InvalidArgumentError, args.unshift( arg ).join(' ')
         end
       else
-        show_program_help( commandParser )
+        show_program_help
       end
       exit
     end
 
+    #######
     private
+    #######
 
-    def show_program_help( commandParser )
-      if commandParser.options.get_banner.nil?
-        puts "Usage: #{commandParser.options.program_name} [global options] <command> [options] [args]"
-      else
-        puts commandParser.options.banner
-      end
+    def show_program_help
+      puts "Usage: #{commandparser.program_name} [options] COMMAND [options] [COMMAND [options] ...] [args]"
       puts ""
-      puts "Available commands:"
-      width = commandParser.commands.keys.max {|a,b| a.length <=> b.length }.length
-      commandParser.commands.sort.each do |name, command|
-        print commandParser.options.summary_indent + name.ljust( width + 4 ) + command.description
-        print " (=default command)" if name == commandParser.default
-        print "\n"
-      end
+      list_commands( 1, commandparser.main_command )
       puts ""
-      puts commandParser.options.summarize
+      puts commandparser.main_command.options.summarize
+      puts
     end
 
   end
 
 
-  # The default version command. It adds the options "-v" and "--version" to the global
-  # +CommandParser+ options. When specified on the command line, it shows the version of the
-  # program. The output can be controlled by options.
+  # The default version command. It adds the options "-v" and "--version" to the global options of
+  # the associated +CommandParser+. When specified on the command line, it shows the version of the
+  # program.
   class VersionCommand < Command
 
     def initialize
-      super( 'version' )
-      @fullversion = false
-      options.separator "Options:"
-      options.on( "-f", "--full", "Show the full version string" ) { @fullversion = true }
+      super( 'version', false )
+      self.short_desc = "Show the version of the program"
     end
 
-    def init( commandParser )
-      commandParser.options do |opt|
-        opt.on_tail( "--version", "-v", "Show the version of the program" ) do
-          execute( commandParser, [] )
+    def init
+      case commandparser.main_command.options
+      when OptionParserWrapper
+        commandparser.main_command.options.instance do |opt|
+          opt.on_tail( "--version", "-v", "Show the version of the program" ) do
+            execute( [] )
+          end
         end
       end
     end
 
-    def description
-      "Shows the version of the program"
-    end
-
     def usage
-      "Usage: #{@options.program_name} version [options]"
+      "Usage: #{commandparser.program_name} version"
     end
 
-    def execute( commandParser, args )
-      if @fullversion
-        version = commandParser.options.ver
-      else
-        version = commandParser.options.version
-        version = version.join( '.' ) if version.instance_of? Array
-      end
-      version = "<NO VERSION SPECIFIED>" if version.nil?
+    def execute( args )
+      version = commandparser.program_version
+      version = version.join( '.' ) if version.instance_of?( Array )
       puts version
       exit
     end
 
   end
 
-  # Holds the registered commands.
-  attr_reader :commands
 
-  # Returns the name of the default command.
-  attr_reader :default
+  # The main class for creating a command based CLI program.
+  class CommandParser
 
-  # Are Exceptions be handled gracefully? I.e. by printing error message and help screen?
-  attr_reader :handleExceptions
+    # The top level command representing the program itself.
+    attr_reader :main_command
 
-  # Create a new CommandParser object. The optional argument +handleExceptions+ specifies if the
-  # object should handle exceptions gracefully.
-  def initialize( handleExceptions = false )
-    @options = OptionParser.new
-    @commands = {}
-    @default = nil
-    @parsed = {}
-    @handleExceptions = handleExceptions
-  end
+    # The name of the program.
+    attr_accessor :program_name
 
-  # If called with a block, this method yields the global options of the +CommandParser+. If no
-  # block is specified, it returns the global options.
-  def options # :yields: options
-    if block_given?
-      yield @options
-    else
-      @options
+    # The version of the program.
+    attr_accessor :program_version
+
+    # Are Exceptions be handled gracefully? I.e. by printing error message and the help screen?
+    attr_reader :handle_exceptions
+
+    # Create a new CommandParser object. The optional argument +handleExceptions+ specifies if the
+    # object should handle exceptions gracefully.
+    def initialize( handleExceptions = false )
+      @main_command = Command.new( 'mainCommand', true )
+      @main_command.super_command = self
+      @program_name = $0
+      @program_version = "0.0.0"
+      @handle_exceptions = handleExceptions
     end
-  end
 
-  # Adds a command to the command list. If the optional parameter +default+ is true, then this
-  # command is used when no command is specified on the command line.
-  def add_command( command, default = false )
-    @commands[command.name] = command
-    @default = command.name if default
-    command.init( self )
-  end
+    # Returns the wrapper for parsing the global options.
+    def options
+      @main_command.options
+    end
 
-  # Parses the global options.
-  def parse_global_options!( args )
-    @options.order!( args )
-  end
+    # Sets the wrapper for parsing the global options.
+    def options=( wrapper )
+      @main_command.options = wrapper
+    end
 
-  # Parses the command.
-  def parse_command!( args )
-    @parsed[:command] = args.shift
-    if @parsed[:command].nil?
-      if @default.nil?
-        raise NoCommandGivenError
-      else
-        @parsed[:command] = @default
+    # Adds a top level command.
+    def add_command( *args )
+      @main_command.add_command( *args )
+    end
+
+    # Parses the command line arguments. If a block is specified, the current hierarchy level and
+    # the name of the current command is yielded after the options for the level have been parsed.
+    def parse( argv = ARGV ) # :yields: level, commandName
+      level = 0
+      command = @main_command
+
+      while !command.nil?
+        argv = if command.has_commands? || ENV.include?( 'POSIXLY_CORRECT' )
+                 command.options.order( argv )
+               else
+                 command.options.permute( argv )
+               end
+        yield( level, command.name ) if block_given?
+
+        if command.has_commands?
+          cmdName, argv = argv[0], argv[1..-1] || []
+
+          if cmdName.nil?
+            if command.default_command.nil?
+              raise NoCommandGivenError
+            else
+              cmdName = command.default_command
+            end
+          else
+            raise InvalidCommandError.new( cmdName ) unless command.commands.include?( cmdName )
+          end
+
+          command = command.commands[cmdName]
+          level += 1
+        else
+          command.execute( argv )
+          command = nil
+        end
       end
-    else
-      raise InvalidCommandError.new( @parsed[:command] ) unless commands.include?( @parsed[:command] )
-    end
-  end
-
-  # Parses the local options. Attention: The command has to be parsed (invoke method
-  # +parse_command!+) before this method can be invoked.
-  def parse_local_options!( args )
-    if @parsed[:command]
-      commands[@parsed[:command]].options.permute!( args ) unless commands[@parsed[:command]].options.nil?
-    end
-  end
-
-  # Calls +parse+ - implemented to mimic OptionParser
-  def permute( args ); parse( args ); end
-  # Calls +parse!+ - implemented to mimic OptionParser
-  def permute!( args ); parse!( args ); end
-  # Calls +parse+ - implemented to mimic OptionParser
-  def order( args ); parse( args ); end
-  # Calls +parse!+ - implemented to mimic OptionParser
-  def order!( args ); parse!( args ); end
-  # see CommandParser#parse!
-  def parse( args ); parse!( args.dup ); end
-
-  # Parses the given argument. First it tries to parse global arguments if given. After that the
-  # command name is analyzied and the options for the specific commands parsed. If +execCommand+ is
-  # true, the command is executed immediately. If false, the <tt>CommandParser#execute</tt> has to
-  # be called to execute the command. The optional +parse+ parameter specifies what should be
-  # parsed. If <tt>:global</tt> is included in the +parse+ array, global options are parsed; if
-  # <tt>:command</tt> is included, the command is parsed and if <tt>:local</tt> is included, the
-  # local options are parsed.
-  def parse!( args, execCommand = true, parse = [:global, :command, :local] )
-    begin
-      context = :global
-      parse_global_options!( args ) if parse.include?( :global )
-      parse_command!( args ) if parse.include?( :command )
-
-      context = :local
-      parse_local_options!( args ) if parse.include?( :local )
-    rescue OptionParser::ParseError => e
-      handle_exception( e, context )
+    rescue ParseError, OptionParser::ParseError => e
+      raise if !@handle_exceptions
+      puts "Error while parsing command line:\n    " + e.message
+      puts
+      @main_command.commands['help'].execute( command.super_commands.reverse.collect {|c| c.name} ) if @main_command.commands['help']
+      exit
     end
 
-    @parsed[:args] = args
-    execute if execCommand
-  end
-
-  # Executes the command. The method +CommandParser#parse!+ has to be called before this one!
-  def execute
-    begin
-      commands[@parsed[:command]].execute( self, @parsed[:args] ) if @parsed[:command]
-    rescue OptionParser::ParseError => e
-      handle_exception( e, :local )
-    end
-  end
-
-  private
-
-  def handle_exception( exception, context )
-    raise unless @handleExceptions
-    s = (context == :global ? "global" : "command specific")
-    puts "Error parsing #{s} options:\n    " + exception.message
-    puts
-    commands['help'].execute( self, (context == :global ? [] : [@parsed[:command]]) ) if commands['help']
-    exit
   end
 
 end
-

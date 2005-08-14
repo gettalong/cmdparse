@@ -6,3 +6,4 @@
 * ability to specify default command (used when no command was given)
 * add order,order!,... methods to mimic optparse
 * optionally capture error messages and provide friendlier output
+* if command has subcommands, use order! method, if has arguments use permute! (=POSIXLY_CORRECT); same with getoptlong

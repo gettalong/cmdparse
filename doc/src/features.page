@@ -5,7 +5,7 @@ orderInfo: 3
 ---
 h2. Feature list
 
-* Based upon the standard library @optparse@
-* Default help and version commands
-* Each command is implemented via a class
-* As easy to use as @optparse@ itself!
+* Commands can have subcommands
+* Default commands for showing help and the version of the program
+* Option parsing library of choice can be used (after writing wrapper), default is @optparse@
+* Easy to use

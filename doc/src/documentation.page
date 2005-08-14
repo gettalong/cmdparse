@@ -10,82 +10,118 @@ The <a href="{relocatable: /rdoc/index.html}">API reference</a> provides informa
 
 h2. Tutorial
 
-<b>The complete code for this example can be found in the file @test.rb@ of the @cmdparse@
+<b>The complete code for this example can be found in the file @net.rb@ of the @cmdparse@
 package!</b>
+
+This tutorial produces a small @net@ application which can add, delete and list IP adresses and show
+'network statistics'. The shown code fragments do not include the whole program. So, instead of
+writing all the code yourself, just look at the code fragments first and then use the include
+@net.rb@ file for running the program.
 
 h3. Require statements
 
 Create a new new file and write the necessary @require@ statements.
 
-<notextile>{extract: {file: ../test.rb, lines: !ruby/range 4..5}}</notextile>
+<notextile>{extract: {file: ../net.rb, lines: !ruby/range 5..5}}</notextile>
 
 h3. The @CommandParser@ class
 
 Next we will define our basic @CommandParser@ by defining the name of the program, its version and
-release number and the global options. These global options are always used by @CommandParser@ and
-have to be specified on the command line before the name of a command. The global options and, for
-the matter, the local command specific options are instances of the @OptionParser@ class which is
-available in the Ruby Standard library.
+the global options. The boolean argument to the constructor of the @CommandParser@ class defines
+whether exceptions should be handled gracefully, i.e. by showing an appropriate error message and
+the help screen.
 
-<notextile>{extract: {file: ../test.rb, lines: !ruby/range 29..37}}</notextile>
+<notextile>{extract: {file: ../net.rb, lines: !ruby/range 30..36}}</notextile>
+
+The options are defined using an option parser wrapper. Currently, the only option parser library
+supported is @optparse@ from the Ruby Standard Library. If you want to use another option parser
+library, you need to write a wrapper for it so that @cmdparse@ can use it.
 
 Now we only have to tell the program to use our newly defined class to process the command line
 arguments.
 
-<notextile>{extract: {file: ../test.rb, lines: !ruby/range 41..42}}</notextile>
+<notextile>{extract: {file: ../net.rb, lines: !ruby/range 86..86}}</notextile>
 
-The @#parse!@ method of our @CommandParser@ object parses the given array of options (the second
-argument specifies if a command should be executed immediately or if the options should only be
-parsed). The @#execute@ method then executes the command.
+The @parse@ method of our @CommandParser@ instance parses the given array of options (or @ARGV@ if
+no argument is specified). All the command line options are parsed and the given command executed.
 
-The program can be executed now but won't be useful as we have not specified any commands. It will
-always produce error messages.
+The program can be executed now but won't be useful as we did not specify any commands.
 
 h3. Defining commands
 
 So, as we have defined our @CommandParser@ object, we need to add some commands to it. First, we
 will add two predefined commands, namely the @help@ and the @version@ command.
 
-<notextile>{extract: {file: ../test.rb, lines: !ruby/range 39..40}}</notextile>
+<notextile>{extract: {file: ../net.rb, lines: !ruby/range 37..38}}</notextile>
 
 That was easy! Now you can execute the program and specify the commands @help@ or @version@.
 However, we want the program to do something "useful". Therefore we define a new command.
 
-<notextile>{extract: {file: ../test.rb, lines: !ruby/range 8..27}}</notextile>
+<notextile>{extract: {file: ../net.rb, lines: !ruby/range 41..44}}</notextile>
 
-The command specific options are initialized in the @#initialize@ method. These options are used by
-our @CommandParser@ object if, and only if, the command is specified on the command line. The
-@#description@ method describes the command and the @#execute@ is called when the command needs to
-be executed.
+This command is defined by using the default @Command@ class. First an instance is created
+assigning a name to the command and defining whether this command takes subcommands. Next we add a
+short description so that the @help@ command can produce something useful. And at last, we add this
+command to our @CommandParser@ instance.
 
-This command has to be added to our @CommandParser@ object.
+We specified that our @ipaddr@ command takes subcommands. So we have to define them, too:
 
-<notextile>{extract: {file: ../test.rb, lines: !ruby/range 38..38}}</notextile>
+<notextile>{extract: {file: ../net.rb, lines: !ruby/range 46..78}}</notextile>
 
-By providing @true@ as second argument, we specifiy that the @test@ command should be the default
-command which gets invoked when no command is specified on the command line. Only one command can be
-specified as default command!
+We add three subcommands to the @ipaddr@ command: @add@, @del@ and @list@.
+
+The @add@ command is similar to the @ipaddr@ command. However, as the @add@ command does not take
+other commands, we have to define an execution block.
+
+The @del@ command is similar to the @add@ command. As we want to be able to delete all IP addresses
+by issuing only one command, we add an option for this.
+
+By providing @true@ as second argument when we add the @list@ command to the @ipaddr@ command, we
+specifiy that this command should be the default command which gets invoked when no command name is
+specified on the command line. Only one command can be specified as default command!
+
+Till now we only used the basic @Command@ class to specify commands. However, new commands can also
+be created by subclassing the @Command@ class, as shown with this last command:
+
+<notextile>{extract: {file: ../net.rb, lines: !ruby/range 9..28}}</notextile>
+<notextile>{extract: {file: ../net.rb, lines: !ruby/range 39..39}}</notextile>
 
 h3. Running the program
 
 That's all! You can run the program now and have a look at the output which differs depending on
 which arguments you choose.
 
-*Notice:* Options, command name and additional arguments have to be in a certain order on the
-command line:
-
-# [optional] Global options
-# Command name
-# [optional] Command specific options
-# [optional] Additional arguments
-
-So, a typical invokation looks like this:
+So, a typical invocation of this program looks like this:
 
 <pre>
-  $ ruby test.rb -r myfunc test -a arg1 arg2 arg3
+  $ ruby net.rb --verbose ipaddr add 192.168.0.1 193.150.0.1
 </pre>
 
-* <tt>-r myfunc</tt> is a global option
-* @test@ is the command name
-* @-a@ is a command specific option (only available for the test command)
-* <tt>arg1 arg2 arg3</tt> are additional arguments
+* <notextile><tt>--verbose</tt></notextile> is a global option
+* @ipaddr@ is the first command name (which has no options)
+* @add@ is the second command name (which also has no options)
+* <tt>192.168.0.1 193.150.0.1</tt> are additional arguments
+
+You should notice that if you type
+<pre>
+  $ ruby net.rb
+</pre>
+
+you get an error because you did not specify any command.
+
+However, when you type
+<pre>
+  $ ruby net.rb ipaddr
+</pre>
+
+you do not get an error!
+
+Why? As the @ipaddr@ command takes subcommands there should be an additional command name (e.g.
+@list@) on the command line. However, as the @list@ command is the default command for @ipaddr@ you
+do not need to type it.
+
+*Notice:* The options of a command which does not take subcommands do not need to be at the front;
+they can be anywhere, like this
+<pre>
+  $ ruby test.rb --verbose mycommand file1 file2 --recursive file3
+</pre>

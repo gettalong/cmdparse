@@ -7,28 +7,28 @@ h2. Download
 
 The newest version of cmdparse can be downloaded from Rubyforge.
 
-Homepage: <a href="http://cmdparse.rubyforge.org">cmdparse.rubyforge.org</a><br />
-Download: <a href="http://rubyforge.org/frs/?group_id=396">http://rubyforge.org/frs/?group_id=396</a>
+Homepage: "cmdparse.rubyforge.org":http://cmdparse.rubyforge.org <br />
+Download: "rubyforge.org/frs/?group_id=396":http://rubyforge.org/frs/?group_id=396
 
 h2. Dependencies
 
-optparse - part of the standard ruby distribution, so nothing to do here
+none
 
 h2. Installation
 
-You can use the standard way to install cmdparse:
+The preferred way of installing cmdparse is via RubyGems:
 <pre>
- $ ruby setup.rb config
- $ ruby setup.rb setup
- $ ruby setup.rb install
+ $ gem install cmdparse
 </pre>
 
-Or you could use Rake and substitute the above commands with this:
+If you do not have RubyGems installed, but Rake, you can use the following command:
 <pre>
  $ rake install
 </pre>
 
-Or you could install cmdparse the "GEM way":
+If you have neither RubyGems nor Rake, use these commands:
 <pre>
- $ gem install cmdparse
+ $ ruby setup.rb config
+ $ ruby setup.rb setup
+ $ ruby setup.rb install
 </pre>
