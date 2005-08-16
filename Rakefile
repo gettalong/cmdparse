@@ -94,7 +94,7 @@ PKG_FILES = FileList.new( [
                             'README',
                             'Rakefile',
                             'ChangeLog',
-                            'test.rb',
+                            'net.rb',
                             'VERSION',
                             'lib/**/*.rb',
                             'doc/**/*'
