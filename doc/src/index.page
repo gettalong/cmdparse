@@ -12,6 +12,14 @@ Have a look around the site!
 
 h2. News
 
+<b>2006-04-05 cmdparse 2.0.1 released!!!</b>
+
+Changes:
+
+* Just a bug fix release for those using cmdparse with Rubygems. By issuing the command
+  @require_gem 'cmdparse'@ the cmdparse library gets automagically loaded.
+* Minor documentation updates
+
 <b>2005-08-16 cmdparse 2.0.0 released!!!</b>
 
 This version is not compatible to previous versions of cmdparse as there have been major changes in

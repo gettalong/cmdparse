@@ -25,7 +25,7 @@
 module CmdParse
 
   # The version of this cmdparse implemention
-  VERSION = [2, 0, 0]
+  VERSION = [2, 0, 1]
 
 
   # Base class for all cmdparse errors.
@@ -239,7 +239,6 @@ module CmdParse
     end
 
   end
-
 
   # The default help command. It adds the options "-h" and "--help" to the global options of the
   # associated +CommandParser+. When the command is specified on the command line, it can show the

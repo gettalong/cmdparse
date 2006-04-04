@@ -124,7 +124,7 @@ else
     s.files = PKG_FILES.to_a
 
     s.require_path = 'lib'
-    s.autorequire = nil
+    s.autorequire = 'cmdparse'
 
     #### Documentation
 

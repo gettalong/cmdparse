@@ -1,13 +1,8 @@
 ---
-title: Documentation
+title: Tutorial
 inMenu: true
 orderInfo: 6
 ---
-h2. Documentation
-
-The <a href="{relocatable: /rdoc/index.html}">API reference</a> provides information on how to use
-@cmdparse@. Here is only a short tutorial which shows most of the features.
-
 h2. Tutorial
 
 <b>The complete code for this example can be found in the file @net.rb@ of the @cmdparse@
