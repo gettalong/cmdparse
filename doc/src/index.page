@@ -17,7 +17,7 @@ h2. News
 Changes:
 
 * Included two patches from Assaph Mehr:
-  * partial command matching can now be used (see <a href="{reloctable: tutorial.page}">tutorial page</a>)
+  * partial command matching can now be used (see <a href="{relocatable: tutorial.page}">tutorial page</a>)
   * now a banner for the help and version commands can be specified
 
 <b>2006-04-05 cmdparse 2.0.1 released!!!</b>
