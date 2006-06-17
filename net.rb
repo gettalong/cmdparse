@@ -27,7 +27,7 @@ class NetStatCommand < CmdParse::Command
 
 end
 
-cmd = CmdParse::CommandParser.new( true )
+cmd = CmdParse::CommandParser.new( true, true )
 cmd.program_name = "net"
 cmd.program_version = [0, 1, 1]
 cmd.options = CmdParse::OptionParserWrapper.new do |opt|
@@ -39,7 +39,7 @@ cmd.add_command( CmdParse::VersionCommand.new )
 cmd.add_command( NetStatCommand.new )
 
 # ipaddr
-ipaddr = CmdParse::Command.new( 'ipaddr', true )
+ipaddr = CmdParse::Command.new( 'ipaddr', true, true )
 ipaddr.short_desc = "Manage IP addresses"
 cmd.add_command( ipaddr )
 

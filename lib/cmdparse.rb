@@ -25,7 +25,7 @@
 module CmdParse
 
   # The version of this cmdparse implemention
-  VERSION = [2, 0, 1]
+  VERSION = [2, 0, 2]
 
 
   # Base class for all cmdparse errors.
@@ -103,6 +103,18 @@ module CmdParse
   # Require default option parser wrapper
   require 'cmdparse/wrappers/optparse'
 
+  # Command Hash - will return partial key matches as well if there is a single
+  # non-ambigous matching key
+  class CommandHash < Hash
+
+    def []( cmd_name )
+      super or begin
+        possible = keys.select {|key| key =~ /^#{cmd_name}.*/ }
+        fetch( possible[0] ) if possible.size == 1
+      end
+    end
+
+  end
 
   # Base class for the commands. This class implements all needed methods so that it can be used by
   # the +CommandParser+ class.
@@ -131,13 +143,21 @@ module CmdParse
     attr_reader :commands
 
     # Initializes the command called +name+. The parameter +has_commands+ specifies if this command
-    # takes other commands as argument.
-    def initialize( name, has_commands )
+    # takes other commands as argument. The optional argument +partial_commands+ specifies, if
+    # partial command matching should be used.
+    def initialize( name, has_commands, partial_commands = false )
       @name = name
       @options = ParserWrapper.new
       @has_commands = has_commands
-      @commands = {}
+      @commands = Hash.new
       @default_command = nil
+      use_partial_commands( partial_commands )
+    end
+
+    def use_partial_commands( use_partial )
+      temp = ( use_partial ? CommandHash.new : Hash.new )
+      temp.update( @commands )
+      @commands = temp
     end
 
     # Returns +true+ if this command supports sub commands.
@@ -272,7 +292,7 @@ module CmdParse
       if args.length > 0
         cmd = commandparser.main_command
         arg = args.shift
-        while !arg.nil? && cmd.commands.keys.include?( arg )
+        while !arg.nil? && cmd.commands[ arg ]
           cmd = cmd.commands[arg]
           arg = args.shift
         end
@@ -292,6 +312,7 @@ module CmdParse
     #######
 
     def show_program_help
+      puts commandparser.banner + "\n" if commandparser.banner
       puts "Usage: #{commandparser.program_name} [options] COMMAND [options] [COMMAND [options] ...] [args]"
       puts ""
       list_commands( 1, commandparser.main_command )
@@ -331,6 +352,7 @@ module CmdParse
     def execute( args )
       version = commandparser.program_version
       version = version.join( '.' ) if version.instance_of?( Array )
+      puts commandparser.banner + "\n" if commandparser.banner
       puts version
       exit
     end
@@ -340,6 +362,9 @@ module CmdParse
 
   # The main class for creating a command based CLI program.
   class CommandParser
+
+    # A standard banner for help & version screens
+    attr_accessor :banner
 
     # The top level command representing the program itself.
     attr_reader :main_command
@@ -354,10 +379,12 @@ module CmdParse
     attr_reader :handle_exceptions
 
     # Create a new CommandParser object. The optional argument +handleExceptions+ specifies if the
-    # object should handle exceptions gracefully.
-    def initialize( handleExceptions = false )
+    # object should handle exceptions gracefully. Set +partial_commands+ to +true+, if you want
+    # partial command matching for the top level commands.
+    def initialize( handleExceptions = false, partial_commands = false )
       @main_command = Command.new( 'mainCommand', true )
       @main_command.super_command = self
+      @main_command.use_partial_commands( partial_commands )
       @program_name = $0
       @program_version = "0.0.0"
       @handle_exceptions = handleExceptions
@@ -402,7 +429,7 @@ module CmdParse
               cmdName = command.default_command
             end
           else
-            raise InvalidCommandError.new( cmdName ) unless command.commands.include?( cmdName )
+            raise InvalidCommandError.new( cmdName ) unless command.commands[ cmdName ]
           end
 
           command = command.commands[cmdName]

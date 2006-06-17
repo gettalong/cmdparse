@@ -44,7 +44,7 @@ SRC_RB = FileList['lib/**/*.rb']
 # The default task is run if rake is given no explicit arguments.
 
 desc "Default Task"
-task :default => :doc
+task :default => :test
 
 
 # End user tasks ################################################################
@@ -67,6 +67,9 @@ task :clean do
   ruby "setup.rb clean"
 end
 
+task :test do
+  ruby "-Ilib test/tc_commandhash.rb"
+end
 
 CLOBBER << "doc/output"
 desc "Builds the documentation"

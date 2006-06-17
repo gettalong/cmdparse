@@ -12,6 +12,14 @@ Have a look around the site!
 
 h2. News
 
+<b>2006-06-17 cmdparse 2.0.2 released!!!</b>
+
+Changes:
+
+* Included two patches from Assaph Mehr:
+  * partial command matching can now be used (see <a href="{reloctable: tutorial.page}">tutorial page</a>)
+  * now a banner for the help and version commands can be specified
+
 <b>2006-04-05 cmdparse 2.0.1 released!!!</b>
 
 Changes:

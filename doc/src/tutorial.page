@@ -65,9 +65,12 @@ Create a new new file and write the necessary @require@ statements.
 h3. The @CommandParser@ class
 
 Next we will define our basic @CommandParser@ by defining the name of the program, its version and
-the global options. The boolean argument to the constructor of the @CommandParser@ class defines
-whether exceptions should be handled gracefully, i.e. by showing an appropriate error message and
-the help screen.
+the global options. The first boolean argument to the constructor of the @CommandParser@ class
+defines whether exceptions should be handled gracefully, i.e. by showing an appropriate error
+message and the help screen. The second boolean argument defines whether the top level commands
+should use partial command matching instead of full command matching. If partial command matching is
+used, then the shortest unambiguous part of a command name can be used instead of always specifing
+the full command name.
 
 <notextile>{extract: {file: ../net.rb, lines: !ruby/range 30..36}}</notextile>
 
@@ -97,10 +100,10 @@ However, we want the program to do something "useful". Therefore we define a new
 
 <notextile>{extract: {file: ../net.rb, lines: !ruby/range 41..44}}</notextile>
 
-This command is defined by using the default @Command@ class. First an instance is created
-assigning a name to the command and defining whether this command takes subcommands. Next we add a
-short description so that the @help@ command can produce something useful. And at last, we add this
-command to our @CommandParser@ instance.
+This command is defined by using the default @Command@ class. First an instance is created assigning
+a name to the command and defining whether this command takes subcommands and uses partial command
+matching. Next we add a short description so that the @help@ command can produce something useful.
+And at last, we add this command to our @CommandParser@ instance.
 
 We specified that our @ipaddr@ command takes subcommands. So we have to define them, too:
 
@@ -157,6 +160,15 @@ you do not get an error!
 Why? As the @ipaddr@ command takes subcommands there should be an additional command name (e.g.
 @list@) on the command line. However, as the @list@ command is the default command for @ipaddr@ you
 do not need to type it.
+
+*By the way:* You get the same output if you type
+<pre>
+  $ ruby net.rb ip
+</pre>
+
+Why? As partial command matching is used for the top level commands, the shortest unambiguous name
+for a command can be used. As there is no other command starting with @ip@ (or even with the letter
+@i@), it is sufficient to write the above to select the @ipaddr@ command.
 
 *Notice:* The options of a command which does not take subcommands do not need to be at the front;
 they can be anywhere, like this
