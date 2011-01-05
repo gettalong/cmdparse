@@ -147,7 +147,6 @@ else
 
   task :package => [:generateFiles]
   task :generateFiles do |t|
-    sh "svn log -r HEAD:1 -v > ChangeLog"
     File.open('VERSION', 'w+') do |file| file.write( PKG_VERSION + "\n" ) end
   end
 
