@@ -96,6 +96,7 @@ PKG_FILES = FileList.new( [
                             'setup.rb',
                             'TODO',
                             'COPYING',
+                            'COPYING.LESSER',
                             'README',
                             'Rakefile',
                             'ChangeLog',
