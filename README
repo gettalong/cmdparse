@@ -1,6 +1,6 @@
 cmdparse - an advanced command line parser using optparse which has support for commands
 
-Copyright (C) 2004 Thomas Leitner
+Copyright (C) 2004-2010 Thomas Leitner
 
 = Description
 
@@ -12,6 +12,9 @@ This library, cmdparse, can be used to create such a command line interface. Int
 optparse or any other option parser library to parse options and it provides a nice API for
 specifying commands.
 
+= License
+
+GNU LGPLv3 - see COPYING.LESSER for the LGPL and COPYING for the GPL
 
 = Dependencies
 
