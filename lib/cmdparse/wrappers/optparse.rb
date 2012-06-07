@@ -1,7 +1,7 @@
 #
 #--
 # cmdparse: advanced command line parser supporting commands
-# Copyright (C) 2004-2010 Thomas Leitner
+# Copyright (C) 2004-2012 Thomas Leitner
 #
 # This file is part of cmdparse.
 #
@@ -24,12 +24,12 @@ require 'optparse'
 # Some extension to the standard option parser class
 class OptionParser
 
-  if const_defined?( 'Officious' )
-    Officious.delete( 'version' )
-    Officious.delete( 'help' )
+  if const_defined?('Officious')
+    Officious.delete('version')
+    Officious.delete('help')
   else
-    DefaultList.long.delete( 'version' )
-    DefaultList.long.delete( 'help' )
+    DefaultList.long.delete('version')
+    DefaultList.long.delete('help')
   end
 
 end
@@ -41,17 +41,17 @@ module CmdParse
 
     # Initializes the wrapper with a default OptionParser instance or the +parser+ parameter and
     # yields this instance.
-    def initialize( parser = OptionParser.new, &block )
+    def initialize(parser = OptionParser.new, &block)
       @instance = parser
-      self.instance( &block )
+      self.instance(&block)
     end
 
-    def order( args )
-      @instance.order( args )
+    def order(args)
+      @instance.order(args)
     end
 
-    def permute( args )
-      @instance.permute( args )
+    def permute(args)
+      @instance.permute(args)
     end
 
     def summarize
