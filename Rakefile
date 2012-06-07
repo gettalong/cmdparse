@@ -99,7 +99,6 @@ PKG_FILES = FileList.new( [
                             'COPYING.LESSER',
                             'README',
                             'Rakefile',
-                            'ChangeLog',
                             'net.rb',
                             'VERSION',
                             'lib/**/*.rb',
@@ -151,7 +150,7 @@ else
     File.open('VERSION', 'w+') do |file| file.write( PKG_VERSION + "\n" ) end
   end
 
-  CLOBBER << "ChangeLog" << "VERSION"
+  CLOBBER << "VERSION"
 
   Rake::GemPackageTask.new( spec ) do |pkg|
     pkg.need_zip = true
