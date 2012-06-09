@@ -23,7 +23,7 @@
 module CmdParse
 
   # The version of this cmdparse implemention
-  VERSION = [2, 0, 4]
+  VERSION = [2, 0, 5]
 
 
   # Base class for all cmdparse errors.
@@ -432,18 +432,18 @@ module CmdParse
     # Parse the command line arguments.
     #
     # If a block is specified, the current hierarchy level and the name of the current command is
-    # yielded before any option parsing is done.
+    # yielded after the option parsing is done but before a command is executed.
     def parse(argv = ARGV) # :yields: level, commandName
       level = 0
       command = @main_command
 
       while !command.nil?
-        yield(level, command.name) if block_given?
         argv = if command.has_commands? || ENV.include?('POSIXLY_CORRECT')
                  command.options.order(argv)
                else
                  command.options.permute(argv)
                end
+        yield(level, command.name) if block_given?
 
         if command.has_commands?
           cmdName, argv = argv[0], argv[1..-1] || []
