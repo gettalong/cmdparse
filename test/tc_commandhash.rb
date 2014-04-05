@@ -1,7 +1,7 @@
-require 'test/unit'
+require 'minitest/autorun'
 require 'cmdparse'
 
-class CommandHashTest < Test::Unit::TestCase
+class CommandHashTest < Minitest::Test
   def setup
     @cmd = CmdParse::CommandHash.new
   end
