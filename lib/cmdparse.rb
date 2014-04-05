@@ -1,7 +1,7 @@
 #
 #--
 # cmdparse: advanced command line parser supporting commands
-# Copyright (C) 2004-2012 Thomas Leitner
+# Copyright (C) 2004-2014 Thomas Leitner
 #
 # This file is part of cmdparse.
 #
@@ -23,7 +23,7 @@
 module CmdParse
 
   # The version of this cmdparse implemention
-  VERSION = [2, 0, 5]
+  VERSION = [2, 0, 6]
 
 
   # Base class for all cmdparse errors.

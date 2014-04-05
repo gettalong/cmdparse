@@ -18,6 +18,13 @@ sort_info: 1
 
 ## News
 
+**2014-04-05 cmdparse 2.0.6 released!!!**
+
+There were no codewise changes but the used infrastructure and tools have been updated to newer
+versions. Also the license information has been added to the gem specification and the tests are now
+included in the distribution.
+
+
 **2012-06-09 cmdparse 2.0.5 released!!!**
 
 Changes:
