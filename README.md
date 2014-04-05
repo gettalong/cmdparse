@@ -40,7 +40,7 @@ If you have neither RubyGems nor Rake, use these commands:
 
 You can build the documentation by invoking
 
-   $ rake doc
+    $ rake doc
 
 This builds the API and the additional documentation. The additional documentation needs webgen >=1.0.0
 (http://webgen.gettalong.org) for building.
