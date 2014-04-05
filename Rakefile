@@ -2,7 +2,7 @@
 #
 #--
 # cmdparse: advanced command line parser supporting commands
-# Copyright (C) 2004-2010 Thomas Leitner
+# Copyright (C) 2004-2014 Thomas Leitner
 #
 # This file is part of cmdparse.
 #
@@ -19,18 +19,22 @@
 #
 #++
 
-
 begin
   require 'rubygems'
-  require 'rake/gempackagetask'
+  require 'rubygems/package_task'
 rescue Exception
   nil
 end
 
+begin
+  require 'webgen/page'
+rescue LoadError
+end
+
 require 'rake/clean'
 require 'rake/packagetask'
-require 'rake/rdoctask'
 require 'rake/testtask'
+require 'rdoc/task'
 
 # General actions  ##############################################################
 
@@ -38,167 +42,133 @@ $:.unshift 'lib'
 require 'cmdparse'
 
 PKG_NAME = "cmdparse"
-PKG_VERSION = CmdParse::VERSION.join( '.' )
+PKG_VERSION = CmdParse::VERSION.join('.')
 PKG_FULLNAME = PKG_NAME + "-" + PKG_VERSION
-
-SRC_RB = FileList['lib/**/*.rb']
-
-# The default task is run if rake is given no explicit arguments.
-
-desc "Default Task"
-task :default => :test
-
 
 # End user tasks ################################################################
 
-desc "Prepares for installation"
-task :prepare do
+# The default task is run if rake is given no explicit arguments.
+
+desc "Default Task (does testing)"
+task :default => :test
+
+desc "Installs the package #{PKG_NAME} using setup.rb"
+task :install do
   ruby "setup.rb config"
   ruby "setup.rb setup"
-end
-
-
-desc "Installs the package #{PKG_NAME}"
-task :install => [:prepare]
-task :install do
   ruby "setup.rb install"
 end
-
 
 task :clean do
   ruby "setup.rb clean"
 end
 
-task :test do
-  ruby "-Ilib test/tc_commandhash.rb"
+Rake::TestTask.new do |test|
+  test.test_files = FileList['test/tc_*.rb']
 end
 
-CLOBBER << "doc/output"
-desc "Builds the documentation"
-task :doc => [:rdoc] do
-  chdir "doc" do
+if defined?(Webgen)
+  CLOBBER << "htmldoc"
+  CLOBBER << "webgen-tmp"
+  desc "Builds the documentation"
+  task :htmldoc do
     sh "webgen"
   end
 end
 
-rd = Rake::RDocTask.new do |rdoc|
-  rdoc.rdoc_dir = 'doc/output/rdoc'
-  rdoc.title    = PKG_NAME
-  rdoc.options << '--line-numbers' << '--inline-source' << '-m CmdParse::CommandParser'
-  rdoc.rdoc_files.include( 'lib/**/*.rb' )
+if defined? RDoc::Task
+  RDoc::Task.new do |rdoc|
+    rdoc.rdoc_dir = 'htmldoc/rdoc'
+    rdoc.title = PKG_NAME
+    rdoc.main = 'CmdParse::CommandParser'
+    rdoc.options << '--line-numbers'
+    rdoc.rdoc_files.include('lib')
+  end
 end
 
+if defined?(Webgen) && defined?(RDoc::Task)
+  desc "Build the whole user documentation"
+  task :doc => [:rdoc, :htmldoc]
+end
 
 # Developer tasks ##############################################################
 
+namespace :dev do
 
-PKG_FILES = FileList.new( [
-                            'setup.rb',
-                            'TODO',
-                            'COPYING',
-                            'COPYING.LESSER',
-                            'README',
-                            'Rakefile',
-                            'net.rb',
-                            'VERSION',
-                            'lib/**/*.rb',
-                            'doc/**/*'
-                          ]) do |fl|
-  fl.exclude( /\bsvn\b/ )
-  fl.exclude( 'doc/output' )
-end
+  PKG_FILES = FileList.new( [
+                             'setup.rb',
+                             'COPYING',
+                             'COPYING.LESSER',
+                             'README.md',
+                             'Rakefile',
+                             'net.rb',
+                             'VERSION',
+                             'lib/**/*.rb',
+                             'doc/**/*',
+                             'test/*'
+                            ])
 
-if !defined? Gem
-  puts "Package Target requires RubyGEMs"
-else
-  spec = Gem::Specification.new do |s|
+  CLOBBER << "VERSION"
+  file 'VERSION' do
+    puts "Generating VERSION file"
+    File.open('VERSION', 'w+') {|file| file.write(PKG_VERSION + "\n")}
+  end
 
-    #### Basic information
+  Rake::PackageTask.new('cmdparse', PKG_VERSION) do |pkg|
+    pkg.need_tar = true
+    pkg.need_zip = true
+    pkg.package_files = PKG_FILES
+  end
 
-    s.name = PKG_NAME
-    s.version = PKG_VERSION
-    s.summary = "Advanced command line parser supporting commands"
-    s.description = <<-EOF
+  if defined? Gem
+    spec = Gem::Specification.new do |s|
+
+      #### Basic information
+      s.name = PKG_NAME
+      s.version = PKG_VERSION
+      s.summary = "Advanced command line parser supporting commands"
+      s.description = <<-EOF
        cmdparse provides classes for parsing commands on the command line; command line options
        are parsed using optparse or any other option parser implementation. Programs that use
        such command line interfaces are, for example, subversion's 'svn' or Rubygem's 'gem' program.
-    EOF
+      EOF
+      s.license = 'LGPLv3'
 
-    #### Dependencies, requirements and files
+      #### Dependencies, requirements and files
+      s.files = PKG_FILES.to_a
+      s.require_path = 'lib'
+      s.autorequire = 'cmdparse'
 
-    s.files = PKG_FILES.to_a
+      #### Documentation
+      s.has_rdoc = true
+      s.rdoc_options = ['--line-numbers', '--main', 'CmdParse::CommandParser']
 
-    s.require_path = 'lib'
-    s.autorequire = 'cmdparse'
+      #### Author and project details
+      s.author = "Thomas Leitner"
+      s.email = "t_leitner@gmx.at"
+      s.homepage = "http://cmdparse.gettalong.org"
+    end
 
-    #### Documentation
+    Gem::PackageTask.new(spec) do |pkg|
+      pkg.need_zip = true
+      pkg.need_tar = true
+    end
 
-    s.has_rdoc = true
-    s.extra_rdoc_files = rd.rdoc_files.reject do |fn| fn =~ /\.rb$/ end.to_a
-    s.rdoc_options = ['--line-numbers', '-m', 'CmdParse::CommandParser']
-
-    #### Author and project details
-
-    s.author = "Thomas Leitner"
-    s.email = "t_leitner@gmx.at"
-    s.homepage = "http://cmdparse.rubyforge.org"
-    s.rubyforge_project = "cmdparse"
   end
 
-  task :package => [:generateFiles]
-  task :generateFiles do |t|
-    File.open('VERSION', 'w+') do |file| file.write( PKG_VERSION + "\n" ) end
-  end
-
-  CLOBBER << "VERSION"
-
-  Rake::GemPackageTask.new( spec ) do |pkg|
-    pkg.need_zip = true
-    pkg.need_tar = true
-  end
-
-end
-
-desc "Upload documentation to homepage"
-task :uploaddoc => [:doc] do
-  Dir.chdir('doc/output')
-  sh "scp -r * gettalong@rubyforge.org:/var/www/gforge-projects/cmdparse/"
-end
-
-
-# Misc tasks ###################################################################
-
-
-def count_lines( filename )
-  lines = 0
-  codelines = 0
-  open( filename ) do |f|
-    f.each do |line|
-      lines += 1
-      next if line =~ /^\s*$/
-      next if line =~ /^\s*#/
-      codelines += 1
+  if defined?(Gem)
+    desc "Upload the release to Rubygems"
+    task :publish_files => [:package] do
+      sh "gem push pkg/cmdparse-#{PKG_VERSION}.gem"
+      puts 'done'
     end
   end
-  [lines, codelines]
-end
 
-
-def show_line( msg, lines, loc )
-  printf "%6s %6s   %s\n", lines.to_s, loc.to_s, msg
-end
-
-
-desc "Show statistics"
-task :statistics do
-  total_lines = 0
-  total_code = 0
-  show_line( "File Name", "Lines", "LOC" )
-  SRC_RB.each do |fn|
-    lines, codelines = count_lines fn
-    show_line( fn, lines, codelines )
-    total_lines += lines
-    total_code  += codelines
+  if defined?(Webgen) && defined?(Gem) && defined?(Rake::RDocTask)
+    desc "Release cmdparse version " + PKG_VERSION
+    task :release => [:clobber, :package, :publish_files]
   end
-  show_line( "Total", total_lines, total_code )
+
 end
+
+task :clobber => ['dev:clobber']
