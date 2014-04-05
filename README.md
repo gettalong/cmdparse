@@ -24,17 +24,17 @@ none
 
 The preferred way of installing cmdparse is via RubyGems:
 
-   $ gem install cmdparse
+    $ gem install cmdparse
 
 If you do not have RubyGems installed, but Rake, you can use the following command:
 
-   $ rake install
+    $ rake install
 
 If you have neither RubyGems nor Rake, use these commands:
 
-   $ ruby setup.rb config
-   $ ruby setup.rb setup
-   $ ruby setup.rb install
+    $ ruby setup.rb config
+    $ ruby setup.rb setup
+    $ ruby setup.rb install
 
 ## Documentation
 
@@ -42,8 +42,8 @@ You can build the documentation by invoking
 
    $ rake doc
 
-This builds the API and the additional documentation. The additional documentation needs webgen
->=1.0.0 (webgen.gettalong.org) for building.
+This builds the API and the additional documentation. The additional documentation needs webgen >=1.0.0
+(http://webgen.gettalong.org) for building.
 
 
 ## Example
@@ -56,4 +56,4 @@ There is an example of how to use cmdparse in the `net.rb` file.
 Author: Thomas Leitner
 
 * Web: <http://cmdparse.gettalong.org>
-* e-Mail: <t_leitner@gmx.at>
+* e-Mail: <mailto:t_leitner@gmx.at>
