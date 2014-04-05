@@ -1,0 +1,100 @@
+---
+title: Homepage
+in_menu: true
+routed_title: cmdparse
+sort_info: 1
+---
+## Welcome
+
+... to the homepage of ***cmdparse***, an advanced command line parser supporting commands.
+
+## Feature List
+
+* Commands can have subcommands
+* Default commands for showing help and the version of the program
+* Option parsing library of choice can be used (after writing wrapper), default is `optparse`
+* Easy to use
+
+
+## News
+
+**2012-06-09 cmdparse 2.0.5 released!!!**
+
+Changes:
+
+* Fixed backwards incompatible change
+
+
+**2012-06-07 cmdparse 2.0.4 released!!!**
+
+Changes:
+
+* Only some minor changes regarding the help output for commands which is nicer now.
+
+
+**2006-06-17 cmdparse 2.0.2 released!!!**
+
+Changes:
+
+* Included two patches from Assaph Mehr:
+  * partial command matching can now be used (see the [tutorial page](tutorial.html))
+  * now a banner for the help and version commands can be specified
+
+
+**2006-04-05 cmdparse 2.0.1 released!!!**
+
+Changes:
+
+* Just a bug fix release for those using cmdparse with Rubygems. By issuing the command
+  `require_gem 'cmdparse'` the cmdparse library gets automagically loaded.
+* Minor documentation updates
+
+
+**2005-08-16 cmdparse 2.0.0 released!!!**
+
+This version is not compatible to previous versions of cmdparse as there have been major changes in
+the API. However, updating your code to use the new API is very easy!
+
+Changes:
+
+* Commands can now have subcommands which can have subcommands which can have subcommands...
+* No need to implement a whole new class for simple commands anymore
+* Default option parser library is `optparse`, however, any option parser library can be used after writing a small wrapper
+
+
+**2005-07-05 cmdparse 1.0.5 released!!!**
+
+Changes:
+
+* added possibility to parse global options, command and local options separately
+
+
+**2005-06-16 cmdparse 1.0.4 released!!!**
+
+Changes:
+
+* fix for older ruby versions
+* fixed bug where exception was not caught
+
+
+**2005-06-09 cmdparse 1.0.3 released!!!**
+
+Changes:
+
+* added optional graceful exception handling
+
+
+**2005-04-21 cmdparse 1.0.2 released!!!**
+
+Changes:
+
+* splitted parsing of the arguments and executing the command into two methods
+
+
+**2005-04-13 cmdparse 1.0.1 released!!!**
+
+Changes:
+
+* Improved HelpCommand: the global options -h and --help take an optional command name now
+* Possibility to define a default command which is used when no command was specified
+* A `NoCommandGivenError` is thrown when no command on the CLI and no default command was specified

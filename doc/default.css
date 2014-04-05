@@ -145,7 +145,8 @@
     border: 1px solid black;
   }
 
-  table.cmdparse-example td {
+  table.cmdparse-example td, pre {
     border: 1px solid #408040;
     background-color: white;
+    padding: 5px;
   }

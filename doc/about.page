@@ -1,9 +1,9 @@
 ---
 title: About
-inMenu: true
-orderInfo: 2
+in_menu: true
+sort_info: 2
 ---
-h2. About @cmdparse@
+## About `cmdparse`
 
 Some new programs use a "command style" command line. Examples for such programs are the "svn"
 program from Subversion and the "gem" program from Rubygems. The standard Ruby distribution has no
@@ -15,14 +15,10 @@ specifying commands and subcommands.
 
 A typical command line for a program which uses commands looks like this:
 
-<pre>
-  $ net --verbose ipaddr add 192.168.0.1 193.150.0.1
-</pre>
+    $ net --verbose ipaddr add 192.168.0.1 193.150.0.1
 
+## Author
 
-h2. Author
-
-* *Thomas Leitner*
-* Web: "http://cmdparse.rubyforge.org":http://cmdparse.rubyforge.org
-* e-Mail: "t_leitner@gmx.at":mailto:t_leitner@gmx.at
-* GPG Key-Id: 0xD942E7F6
+* **Thomas Leitner**
+* Web: <http://cmdparse.gettalong.org>
+* e-Mail: <mailto:t_leitner@gmx.at>
