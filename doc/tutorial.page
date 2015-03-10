@@ -3,52 +3,6 @@ title: Tutorial
 in_menu: true
 sort_info: 6
 ---
-## Quickstart
-
-Here are some short code fragments which show how to use cmdparse. A complete example app can be
-found later in the [tutorial section](#tutorial).
-
-Defining commands using classes:
-
-~~~ ruby
-class TestCmd < CmdParse::Command
-  def initialize
-    super('test', true)
-    self.add_command(TestSubCmd.new)
-  end
-end
-
-class TestSubCmd < CmdParse::Command
-  def initialize
-    super('sub',false)
-  end
-
-  def execute (args)
-    puts "Hallo #{args}"
-  end
-end
-
-cmd = CmdParse::CommandParser.new( true )
-cmd.add_command(TestCmd.new)
-~~~
-
-Defining command using the basic `CmdParse::Command` class:
-
-~~~ ruby
-cmd = CmdParse::CommandParser.new( true )
-testcmd = CmdParse::Command.new( 'test', true )
-testcmd.short_desc = "Short desc"
-cmd.add_command( testcmd )
-
-sub = CmdParse::Command.new( 'sub', false )
-sub.short_desc = "Add an IP address"
-sub.set_execution_block do |args|
-  puts "Hallo #{args}"
-end
-testcmd.add_command( sub )
-~~~
-
-
 ## Tutorial
 
 The complete code for this example can be found in the file `net.rb` of the `cmdparse` package!

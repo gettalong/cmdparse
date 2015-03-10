@@ -1,5 +1,2 @@
-api.html:
-  dest_path: rdoc/index.html
-  title: API Reference
-  sort_info: 7
-  in_menu: true
+api/index.html:
+  dest_path: CmdParse/CommandParser.html

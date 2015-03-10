@@ -1,107 +1,114 @@
 ---
-title: Homepage
+title: Home
 in_menu: true
 routed_title: cmdparse
 sort_info: 1
 ---
-## Welcome
+## cmdparse
 
-... to the homepage of ***cmdparse***, an advanced command line parser supporting commands.
+... is an advanced Ruby command line parser supporting nested commands.
 
-## Feature List
+It allows the creation of "command style" programs, like `git` or `svn`, that perform different
+functions depending on which command is invoked. Additionally, nesting of commands, i.e. commands
+that take commands themselves, is also possible. For option parsing, the battle-tested Ruby standard
+library `optparse` is used.
 
-* Commands can have subcommands
-* Default commands for showing help and the version of the program
-* Option parsing library of choice can be used (after writing wrapper), default is `optparse`
+A typical command line for a program which uses commands looks like this:
+
+    $ net --verbose ipaddr add 192.168.0.1 193.150.0.1
+
+
+## Features
+
+* Commands can have sub-commands
+* Built-in commands for showing help and the version of the program
+* Automatic discovery of names and number of required/optional command arguments
+* Truly global options that can be used on any command
+* No need to learn a special DSL
+* Use POROs (plain old Ruby objects) for creating commands or create them on the fly
+* All `OptionParser` goodies available for option parsing
 * Easy to use
 
 
-## News
+## Quickstart
 
-**2014-04-05 cmdparse 2.0.6 released!!!**
+Here are two short code samples which show how to use cmdparse. A complete example application can
+be found in the [tutorial](tutorial.html), also see the API documentation of
+[CmdParse::CommandParser] and [CmdParse::Command].
 
-There were no codewise changes but the used infrastructure and tools have been updated to newer
-versions. Also the license information has been added to the gem specification and the tests are now
-included in the distribution.
+A sample CLI program where commands are defined using classes:
 
+~~~ ruby
+require 'cmdparse'
 
-**2012-06-09 cmdparse 2.0.5 released!!!**
+class TestCmd < CmdParse::Command
+  def initialize
+    super('test')
+    short_desc('Short description of command')
+    add_command(TestSubCmd.new)
+  end
+end
 
-Changes:
+class TestSubCmd < CmdParse::Command
+  def initialize
+    super('sub', takes_commands: false)
+    options.on('-x', '--example', 'Example option') { puts 'example' }
+  end
 
-* Fixed backwards incompatible change
+  def execute(name, *opt)
+    puts "Hello #{name}, options: #{opt.join(', ')}"
+  end
+end
 
+parser = CmdParse::CommandParser.new(handle_exceptions: :no_help)
+parser.add_command(CmdParse::HelpCommand.new)
+parser.add_command(TestCmd.new)
+parser.parse
+~~~
 
-**2012-06-07 cmdparse 2.0.4 released!!!**
+The same program but with the commands defined on the fly:
 
-Changes:
+~~~ ruby
+<%= context.render_block('sample') %>
+~~~
 
-* Only some minor changes regarding the help output for commands which is nicer now.
+Sample output for different invocations:
 
-
-**2006-06-17 cmdparse 2.0.2 released!!!**
-
-Changes:
-
-* Included two patches from Assaph Mehr:
-  * partial command matching can now be used (see the [tutorial page](tutorial.html))
-  * now a banner for the help and version commands can be specified
-
-
-**2006-04-05 cmdparse 2.0.1 released!!!**
-
-Changes:
-
-* Just a bug fix release for those using cmdparse with Rubygems. By issuing the command
-  `require_gem 'cmdparse'` the cmdparse library gets automagically loaded.
-* Minor documentation updates
-
-
-**2005-08-16 cmdparse 2.0.0 released!!!**
-
-This version is not compatible to previous versions of cmdparse as there have been major changes in
-the API. However, updating your code to use the new API is very easy!
-
-Changes:
-
-* Commands can now have subcommands which can have subcommands which can have subcommands...
-* No need to implement a whole new class for simple commands anymore
-* Default option parser library is `optparse`, however, any option parser library can be used after writing a small wrapper
-
-
-**2005-07-05 cmdparse 1.0.5 released!!!**
-
-Changes:
-
-* added possibility to parse global options, command and local options separately
+<%
+invocations = ['', 'help', 'test sub', 'test sub -h', 'test sub Thomas', 'test sub -x Thomas opt1 opt2']
+tmpfile = context.website.tmpdir('sample.rb', true)
+File.write(tmpfile, context.render_block('sample'))
+result = invocations.map do |args|
+  ["$ <strong>sample.rb #{args}</strong>", h(`ruby -I#{context.website.directory}/lib #{tmpfile} #{args}`)]
+end.flatten.join("\n")
+%>
+<pre>
+<%= result %>
+</pre>
 
 
-**2005-06-16 cmdparse 1.0.4 released!!!**
 
-Changes:
+## Author
 
-* fix for older ruby versions
-* fixed bug where exception was not caught
-
-
-**2005-06-09 cmdparse 1.0.3 released!!!**
-
-Changes:
-
-* added optional graceful exception handling
+* **Thomas Leitner**
+* Web: <http://cmdparse.gettalong.org>
+* e-Mail: <mailto:t_leitner@gmx.at>
 
 
-**2005-04-21 cmdparse 1.0.2 released!!!**
+--- name:sample pipeline:
+require 'cmdparse'
 
-Changes:
+parser = CmdParse::CommandParser.new(handle_exceptions: :no_help)
+parser.add_command(CmdParse::HelpCommand.new)
+parser.add_command('test') do |test_cmd|
+  test_cmd.short_desc('Short description of command')
 
-* splitted parsing of the arguments and executing the command into two methods
-
-
-**2005-04-13 cmdparse 1.0.1 released!!!**
-
-Changes:
-
-* Improved HelpCommand: the global options -h and --help take an optional command name now
-* Possibility to define a default command which is used when no command was specified
-* A `NoCommandGivenError` is thrown when no command on the CLI and no default command was specified
+  test_cmd.add_command('sub') do |sub_cmd|
+    sub_cmd.takes_commands(false)
+    sub_cmd.options.on('-x', '--example', 'Example option') { puts 'example' }
+    sub_cmd.action do |name, *opt|
+      puts "Hello #{name}, options: #{opt.join(', ')}"
+    end
+  end
+end
+parser.parse
