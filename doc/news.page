@@ -5,7 +5,7 @@ sort_info: 8
 ---
 ## News
 
-### 2015-03-?? cmdparse 3.0.0 released!
+### 2015-03-12 cmdparse 3.0.0 released!
 
 This version is not compatible with previous versions of cmdparse and requires at least Ruby 2.0.
 However, updating code to use the new API is straightforward and the new version offers more
@@ -13,13 +13,14 @@ features!
 
 Changes:
 
+* License changed to MIT!
 * Top level options and global options are now separated
 * Easier on the fly definition of commands
 * Better help output (automatic formatting of long lines -- even for option descriptions --,
   automatic argument name detection,&nbsp;...)
 * Keyword arguments are now used for better code readability
 * The `CmdParse::VERSION` constant is now a simple version string instead of an array
-* Better API documentation
+* Better API documentation and expanded tutorial
 * Better website design and integration of the API documentation into the website
 
 
