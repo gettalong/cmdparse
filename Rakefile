@@ -4,20 +4,9 @@
 # cmdparse: advanced command line parser supporting commands
 # Copyright (C) 2004-2015 Thomas Leitner
 #
-# This file is part of cmdparse.
-#
-# cmdparse is free software: you can redistribute it and/or modify it under the terms of the GNU
-# Lesser General Public License as published by the Free Software Foundation, either version 3 of
-# the License, or (at your option) any later version.
-#
-# cmdparse is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even
-# the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser
-# General Public License for more details.
-#
-# You should have received a copy of the GNU Lesser General Public License along with cmdparse. If
-# not, see <http://www.gnu.org/licenses/>.
-#
+# This file is part of cmdparse which is licensed under the MIT.
 #++
+#
 
 require 'rubygems/package_task'
 require 'rake/clean'
@@ -78,7 +67,6 @@ namespace :dev do
   PKG_FILES = FileList.new( [
                              'setup.rb',
                              'COPYING',
-                             'COPYING.LESSER',
                              'README.md',
                              'Rakefile',
                              'example/net.rb',
@@ -110,7 +98,7 @@ namespace :dev do
        cmdparse provides classes for parsing (possibly nested) commands on the command line;
        command line options themselves are parsed using optparse.
        EOF
-    s.license = 'LGPLv3'
+    s.license = 'MIT'
 
     #### Dependencies, requirements and files
     s.files = PKG_FILES.to_a

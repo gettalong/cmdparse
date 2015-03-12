@@ -33,7 +33,7 @@ what each part does can be found on <http://cmdparse.gettalong.org/tutorial.html
 
 ## License
 
-GNU LGPLv3 - see COPYING.LESSER for the LGPL and COPYING for the GPL
+MIT - see COPYING.
 
 
 ## Dependencies
