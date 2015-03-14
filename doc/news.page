@@ -5,6 +5,13 @@ sort_info: 8
 ---
 ## News
 
+### 2015-03-14 cmdparse 3.0.1 released!
+
+Changes:
+
+* Commands in usage line are now shown sorted
+
+
 ### 2015-03-12 cmdparse 3.0.0 released!
 
 This version is not compatible with previous versions of cmdparse and requires at least Ruby 2.0.

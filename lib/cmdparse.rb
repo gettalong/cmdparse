@@ -18,7 +18,7 @@ OptionParser::Officious.delete('help')
 module CmdParse
 
   # The version of this cmdparse implemention
-  VERSION = '3.0.0'
+  VERSION = '3.0.1'
 
 
   # Base class for all cmdparse errors.
@@ -486,7 +486,7 @@ module CmdParse
     #
     #   {command | other_command | another_command }
     def usage_commands
-      (commands.size > 0 ? "{#{commands.keys.join(" | ")}}" : '')
+      (commands.size > 0 ? "{#{commands.keys.sort.join(" | ")}}" : '')
     end
 
     # Returns the formatted short description.
