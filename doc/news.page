@@ -11,6 +11,7 @@ Changes:
 
 * Commands in usage line are now shown sorted
 * Long lines with embedded new lines are now correctly formatted
+* The built-in version command can now be told to not add the `-v` and `--version` switches
 
 
 ### 2015-03-12 cmdparse 3.0.0 released!

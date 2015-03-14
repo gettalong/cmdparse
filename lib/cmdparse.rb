@@ -688,7 +688,8 @@ module CmdParse
 
   # The default version command.
   #
-  # It adds the options "-v" and "--version" to the CommandParser#global_options.
+  # It adds the options "-v" and "--version" to the CommandParser#main_options but this can be
+  # changed in ::new.
   #
   # When the command is specified on the command line (or one of the above mentioned options), it
   # shows the version of the program configured by the settings
@@ -697,15 +698,22 @@ module CmdParse
   # * command_parser.main_options.version
   class VersionCommand < Command
 
-    def initialize #:nodoc:
+    # Create a new version command.
+    #
+    # Options:
+    #
+    # add_switches:: Specifies whether the '-v' and '--version' switches should be added to the
+    #                CommandParser#main_options
+    def initialize(add_switches: true)
       super('version', takes_commands: false)
       short_desc("Show the version of the program")
+      @add_switches = add_switches
     end
 
     def on_after_add #:nodoc:
       command_parser.main_options.on_tail("--version", "-v", "Show the version of the program") do
         execute
-      end
+      end if @add_switches
     end
 
     def execute #:nodoc:
