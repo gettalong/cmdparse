@@ -10,6 +10,7 @@ sort_info: 8
 Changes:
 
 * Commands in usage line are now shown sorted
+* Long lines with embedded new lines are now correctly formatted
 
 
 ### 2015-03-12 cmdparse 3.0.0 released!

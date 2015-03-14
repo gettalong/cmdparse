@@ -519,7 +519,7 @@ module CmdParse
         end.join('')
       end
       cond_format_help_section("Available commands", describe_commands.call(self),
-                               condition: takes_commands?)
+                               condition: takes_commands?, preformatted: true)
     end
 
     # Returns the formatted arguments of this command.
@@ -542,7 +542,7 @@ module CmdParse
         summary << format(line, width: command_parser.help_line_width - command_parser.help_indent,
                           indent: summary_width + 1, indent_first_line: false) << "\n"
       end
-      cond_format_help_section(title, summary, condition: !summary.empty?)
+      cond_format_help_section(title, summary, condition: !summary.empty?, preformatted: true)
     end
 
     # This hook method is called when the command (or one of its super-commands) is added to another
@@ -571,11 +571,26 @@ module CmdParse
     #
     #   Summary:
     #       help - Provide help for individual commands
-    def cond_format_help_section(title, *lines, condition: true, indent: true)
+    #
+    # Options:
+    #
+    # condition:: The formatted help section is only returned if the condition is +true+.
+    #
+    # indent:: Whether the lines should be indented with CommandParser#help_indent spaces.
+    #
+    # preformatted:: Assume that the given lines are already correctly formatted and don't try to
+    #                reformat them.
+    def cond_format_help_section(title, *lines, condition: true, indent: true, preformatted: false)
       if condition
-        "#{title}:\n" << format(lines.flatten.join("\n"),
-                                indent: (indent ? command_parser.help_indent : 0),
-                                indent_first_line: true) << "\n\n"
+        out = "#{title}:\n"
+        lines = lines.flatten.join("\n").split(/\n/)
+        if preformatted
+          lines.map! {|l| ' '*command_parser.help_indent << l} if indent
+          out << lines.join("\n")
+        else
+          out << format(lines.join("\n"), indent: (indent ? command_parser.help_indent : 0), indent_first_line: true)
+        end
+        out << "\n\n"
       else
         ''
       end
@@ -596,8 +611,8 @@ module CmdParse
                indent: command_parser.help_indent, indent_first_line: false)
       content = (content || '').dup
       line_length = width - indent
-      first_line_pattern = other_lines_pattern = /\A.{1,#{line_length}}\z|\A.{1,#{line_length}}[ \n]/
-      (first_line_pattern = /\A.{1,#{width}}\z|\A.{1,#{width}}[ \n]/) unless indent_first_line
+      first_line_pattern = other_lines_pattern = /\A.{1,#{line_length}}\z|\A.{1,#{line_length}}[ \n]/m
+      (first_line_pattern = /\A.{1,#{width}}\z|\A.{1,#{width}}[ \n]/m) unless indent_first_line
       pattern = first_line_pattern
 
       content.split(/\n\n/).map do |paragraph|
