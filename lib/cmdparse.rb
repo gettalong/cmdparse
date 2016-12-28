@@ -27,7 +27,7 @@ class OptionParser #:nodoc:
   def options_defined?
     stack[1..-1].each do |list|
       list.each_option do |switch|
-        return true if ::OptionParser::Switch === switch && (switch.short || switch.long)
+        return true if switch.kind_of?(OptionParser::Switch) && (switch.short || switch.long)
       end
     end
     false
@@ -114,7 +114,7 @@ module CmdParse
     end
 
     def [](cmd_name) #:nodoc:
-      super or begin
+      super || begin
         possible = keys.select {|key| key[0, cmd_name.length] == cmd_name }
         fetch(possible[0]) if possible.size == 1
       end
@@ -260,8 +260,8 @@ module CmdParse
     #
     # The argument +val+ needs to be +true+ or +false+.
     def takes_commands(val)
-      if !val && commands.size > 0
-        raise Error, "Can't change value of takes_commands to false because there are already sub-commands"
+      if !val && !commands.empty?
+        raise Error, "Can't change takes_commands to false because there are already sub-commands"
       else
         @takes_commands = val
       end
@@ -488,7 +488,7 @@ module CmdParse
     #
     #   {command | other_command | another_command }
     def usage_commands
-      (commands.size > 0 ? "{#{commands.keys.sort.join(" | ")}}" : '')
+      (commands.empty? ? '' : "{#{commands.keys.sort.join(" | ")}}")
     end
 
     # Returns the formatted short description.
@@ -513,7 +513,7 @@ module CmdParse
     def help_commands
       describe_commands = lambda do |command, level = 0|
         command.commands.sort.collect do |name, cmd|
-          str =  "  "*level << name << (name == command.default_command ? " (*)" : '')
+          str = "  " * level << name << (name == command.default_command ? " (*)" : '')
           str = str.ljust(command_parser.help_desc_indent) << cmd.short_desc.to_s
           str = format(str, width: command_parser.help_line_width - command_parser.help_indent,
                        indent: command_parser.help_desc_indent)
@@ -529,7 +529,7 @@ module CmdParse
     # For the output format see #cond_format_help_section
     def help_arguments
       desc = @argument_desc.map {|k, v| k.to_s.ljust(command_parser.help_desc_indent) << v.to_s}
-      cond_format_help_section('Arguments', desc, condition: @argument_desc.size > 0)
+      cond_format_help_section('Arguments', desc, condition: !@argument_desc.empty?)
     end
 
     # Returns the formatted option descriptions for the given OptionParser instance.
@@ -556,7 +556,7 @@ module CmdParse
 
     # For sorting commands by name.
     def <=>(other)
-      self.name <=> other.name
+      name <=> other.name
     end
 
     protected
@@ -587,7 +587,7 @@ module CmdParse
         out = "#{title}:\n"
         lines = lines.flatten.join("\n").split(/\n/)
         if preformatted
-          lines.map! {|l| ' '*command_parser.help_indent << l} if indent
+          lines.map! {|l| ' ' * command_parser.help_indent << l} if indent
           out << lines.join("\n")
         else
           out << format(lines.join("\n"), indent: (indent ? command_parser.help_indent : 0), indent_first_line: true)
@@ -619,11 +619,11 @@ module CmdParse
 
       content.split(/\n\n/).map do |paragraph|
         lines = []
-          while paragraph.length > 0
+        unless paragraph.empty?
           unless (str = paragraph.slice!(pattern).sub(/[ \n]\z/, ''))
             str = paragraph.slice!(0, line_length)
           end
-          lines << (lines.empty? && !indent_first_line ? '' : ' '*indent) + str.gsub(/\n/, ' ')
+          lines << (lines.empty? && !indent_first_line ? '' : ' ' * indent) + str.tr("\n", ' ')
           pattern = other_lines_pattern
         end
         lines.join("\n")
@@ -650,8 +650,8 @@ module CmdParse
     def initialize #:nodoc:
       super('help', takes_commands: false)
       short_desc('Provide help for individual commands')
-      long_desc('This command prints the program help if no arguments are given. If one or ' <<
-                'more command names are given as arguments, these arguments are interpreted ' <<
+      long_desc('This command prints the program help if no arguments are given. If one or ' \
+                'more command names are given as arguments, these arguments are interpreted ' \
                 'as a hierachy of commands and the help for the right most command is show.')
       argument_desc(COMMAND: 'The name of a command or sub-command')
     end
@@ -668,7 +668,7 @@ module CmdParse
     end
 
     def execute(*args) #:nodoc:
-      if args.length > 0
+      if !args.empty?
         cmd = command_parser.main_command
         arg = args.shift
         while !arg.nil? && cmd.commands.key?(arg)
@@ -791,8 +791,8 @@ module CmdParse
     #
     # handle_exceptions:: Set to +true+ if exceptions should be handled gracefully by showing the
     #                     error and a help message, or to +false+ if exception should not be handled
-    #                     at all. If this options is set to :no_help, the exception is handled but no
-    #                     help message is shown.
+    #                     at all. If this options is set to :no_help, the exception is handled but
+    #                     no help message is shown.
     #
     # takes_commands:: Specifies whether the main program takes any commands.
     def initialize(handle_exceptions: false, takes_commands: true)
