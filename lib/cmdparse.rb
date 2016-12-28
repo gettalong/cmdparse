@@ -870,7 +870,9 @@ module CmdParse
         else
           original_n = @current_command.arity
           n = (original_n < 0 ? -original_n - 1 : original_n)
-          raise NotEnoughArgumentsError.new(n) if argv.size < n
+          if argv.size < n
+            raise NotEnoughArgumentsError.new("#{n} - #{@current_command.usage_arguments}")
+          end
 
           argv.slice!(n..-1) unless original_n < 0
           @current_command.execute(*argv)
