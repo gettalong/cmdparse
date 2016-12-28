@@ -12,6 +12,35 @@ require 'optparse'
 OptionParser::Officious.delete('version')
 OptionParser::Officious.delete('help')
 
+
+# Extension for OptionParser objects to allow access to some internals.
+class OptionParser #:nodoc:
+
+  # Access the option list stack.
+  attr_reader :stack
+
+  # Returns +true+ if at least one local option is defined.
+  #
+  # The zeroth stack element is not respected when doing the query because it contains either the
+  # OptionParser::DefaultList or a CmdParse::MultiList with the global options of the
+  # CmdParse::CommandParser.
+  def options_defined?
+    stack[1..-1].each do |list|
+      list.each_option do |switch|
+        return true if ::OptionParser::Switch === switch && (switch.short || switch.long)
+      end
+    end
+    false
+  end
+
+  # Returns +true+ if a banner has been set.
+  def banner?
+    !@banner.nil?
+  end
+
+end
+
+
 # Namespace module for cmdparse.
 #
 # See CmdParse::CommandParser and CmdParse::Command for the two important classes.
@@ -121,33 +150,6 @@ module CmdParse
           @list.reverse_each {|list| list.#{mname}(*args, &block)}
         end
       EOF
-    end
-
-  end
-
-  # Extension for OptionParser objects to allow access to some internals.
-  class ::OptionParser #:nodoc:
-
-    # Access the option list stack.
-    attr_reader :stack
-
-    # Returns +true+ if at least one local option is defined.
-    #
-    # The zeroth stack element is not respected when doing the query because it contains either the
-    # OptionParser::DefaultList or a CmdParse::MultiList with the global options of the
-    # CmdParse::CommandParser.
-    def options_defined?
-      stack[1..-1].each do |list|
-        list.each_option do |switch|
-          return true if ::OptionParser::Switch === switch && (switch.short || switch.long)
-        end
-      end
-      false
-    end
-
-    # Returns +true+ if a banner has been set.
-    def banner?
-      !@banner.nil?
     end
 
   end
