@@ -105,6 +105,11 @@ module CmdParse
     reason 'Not enough arguments provided, minimum is'
   end
 
+  # This error is thrown when too many arguments are provided for the command.
+  class TooManyArgumentsError < ParseError
+    reason 'Too many arguments provided, maximum is'
+  end
+
   # Command Hash - will return partial key matches as well if there is a single non-ambigous
   # matching key
   class CommandHash < Hash #:nodoc:
@@ -872,6 +877,8 @@ module CmdParse
           n = (original_n < 0 ? -original_n - 1 : original_n)
           if argv.size < n
             raise NotEnoughArgumentsError.new("#{n} - #{@current_command.usage_arguments}")
+          elsif argv.size > n && original_n > 0
+            raise TooManyArgumentsError.new("#{n} - #{@current_command.usage_arguments}")
           end
 
           argv.slice!(n..-1) unless original_n < 0
