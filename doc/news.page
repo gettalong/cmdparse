@@ -5,6 +5,14 @@ sort_info: 8
 ---
 ## News
 
+### 2016-12-28 cmdparse 3.0.2 released!
+
+Changes:
+
+* Raise an error if too many arguments are provided for a command
+* Better error message if not enough arguments are provided for a command
+
+
 ### 2015-03-14 cmdparse 3.0.1 released!
 
 Changes:
