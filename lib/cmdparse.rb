@@ -624,7 +624,7 @@ module CmdParse
 
       content.split(/\n\n/).map do |paragraph|
         lines = []
-        unless paragraph.empty?
+        until paragraph.empty?
           unless (str = paragraph.slice!(pattern).sub(/[ \n]\z/, ''))
             str = paragraph.slice!(0, line_length)
           end
