@@ -5,6 +5,14 @@ sort_info: 8
 ---
 ## News
 
+### 2017-01-13 cmdparse 3.0.3 released!
+
+Changes:
+
+* Fix bug introduced during refactoring that affected help output (continuation lines were missing)
+  - thanks to Andrew Talbot for reporting the bug
+
+
 ### 2016-12-28 cmdparse 3.0.2 released!
 
 Changes:

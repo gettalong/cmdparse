@@ -47,7 +47,7 @@ end
 module CmdParse
 
   # The version of this cmdparse implemention
-  VERSION = '3.0.2'.freeze
+  VERSION = '3.0.3'.freeze
 
 
   # Base class for all cmdparse errors.
