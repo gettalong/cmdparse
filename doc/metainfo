@@ -1,3 +1,10 @@
+--- paths
+[/**/*.js, /**/*.css]:
+  modified_at_in_dest_path: true
+
+/**/*.scss:
+  modified_at_in_dest_path: true
+
 --- alcn
 /api/:
   title: API
@@ -12,3 +19,5 @@
 /api/**/index*.html:
   in_menu: false
 
+/**/*.css:
+  pipeline: scss,cssminify
