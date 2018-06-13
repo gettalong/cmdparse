@@ -57,15 +57,20 @@
 
     </div>
 
-    <!-- Start of StatCounter Code for Default Guide -->
-    <script type="text/javascript">
-      var sc_project=10338773;
-      var sc_invisible=1;
-      var sc_security="7779f3af";
-      var sc_client_storage="disabled";
-    </script>
-    <script type="text/javascript" src="https://www.statcounter.com/counter/counter.js" async="async"></script>
-    <noscript><div class="statcounter"><a title="website statistics" href="http://statcounter.com/" target="_blank"><img class="statcounter" src="//c.statcounter.com/10338773/0/7779f3af/1/" alt="website statistics" /></a></div></noscript>
-    <!-- End of StatCounter Code for Default Guide -->
+<script type="text/javascript">
+  var _paq = _paq || [];
+  _paq.push(["setDoNotTrack", true]);
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+  (function() {
+    var u="//stats.gettalong.org/";
+    _paq.push(['setTrackerUrl', u+'piwik.php']);
+    _paq.push(['setSiteId', '2']);
+    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+  })();
+</script>
+<noscript><p><img src="//stats.gettalong.org/piwik.php?idsite=2&amp;rec=1" style="border:0;" alt="" /></p></noscript>
+
   </body>
 </html>
