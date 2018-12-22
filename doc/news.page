@@ -5,6 +5,14 @@ sort_info: 8
 ---
 ## News
 
+### 2018-12-22 cmdparse 3.0.4 released!
+
+Changes:
+
+* Fix bug in help output generation when a word is longer than the available space - thanks to
+  Damien Robert for the bug report and pull request
+
+
 ### 2017-01-13 cmdparse 3.0.3 released!
 
 Changes:
