@@ -1,7 +1,7 @@
 #
 #--
 # cmdparse: advanced command line parser supporting commands
-# Copyright (C) 2004-2015 Thomas Leitner
+# Copyright (C) 2004-2018 Thomas Leitner
 #
 # This file is part of cmdparse which is licensed under the MIT.
 #++
