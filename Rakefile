@@ -113,7 +113,7 @@ namespace :dev do
     #### Author and project details
     s.author = "Thomas Leitner"
     s.email = "t_leitner@gmx.at"
-    s.homepage = "http://cmdparse.gettalong.org"
+    s.homepage = "https://cmdparse.gettalong.org"
   end
 
   Gem::PackageTask.new(spec) do |pkg|

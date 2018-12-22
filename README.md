@@ -11,7 +11,7 @@ to create programs that use such a command line interface.
 This library, cmdparse, can be used to create such a command line interface. Internally it uses
 optparse to parse options and it provides a nice API for specifying commands.
 
-See <http://cmdparse.gettalong.org> for detailed information, an extensive tutorial and the API
+See <https://cmdparse.gettalong.org> for detailed information, an extensive tutorial and the API
 reference!
 
 
@@ -21,14 +21,14 @@ You can build the documentation by invoking
 
     $ rake doc
 
-This builds the whole documentation and needs webgen >=1.4.0 (http://webgen.gettalong.org) for
+This builds the whole documentation and needs webgen >=1.4.0 (https://webgen.gettalong.org) for
 building.
 
 
 ## Example Usage
 
 There is an example of how to use cmdparse in the `example/net.rb` file. A detailed walkthrough of
-what each part does can be found on <http://cmdparse.gettalong.org/tutorial.html>.
+what each part does can be found on <https://cmdparse.gettalong.org/tutorial.html>.
 
 
 ## License
@@ -58,5 +58,5 @@ If you don't want to use RubyGems, use these commands:
 
 Author: Thomas Leitner
 
-* Web: <http://cmdparse.gettalong.org>
+* Web: <https://cmdparse.gettalong.org>
 * e-Mail: <mailto:t_leitner@gmx.at>

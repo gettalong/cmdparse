@@ -91,7 +91,7 @@ end.flatten.join("\n")
 ## Author
 
 * **Thomas Leitner**
-* Web: <http://cmdparse.gettalong.org>
+* Web: <https://cmdparse.gettalong.org>
 * e-Mail: <mailto:t_leitner@gmx.at>
 
 
