@@ -841,8 +841,8 @@ module CmdParse
     # Adds a top level command.
     #
     # See Command#add_command for detailed invocation information.
-    def add_command(*args, &block)
-      @main_command.add_command(*args, &block)
+    def add_command(*args, **kws, &block)
+      @main_command.add_command(*args, **kws, &block)
     end
 
     # Parses the command line arguments.
