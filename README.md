@@ -1,6 +1,6 @@
 **cmdparse** - an advanced command line parser using optparse which has support for commands
 
-Copyright (C) 2004-2018 Thomas Leitner
+Copyright (C) 2004-2020 Thomas Leitner
 
 ## Description
 
