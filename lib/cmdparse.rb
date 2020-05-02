@@ -157,6 +157,10 @@ module CmdParse
       EOF
     end
 
+    def get_candidates(id, &b)
+      @list.reverse_each {|list| list.get_candidates(id, &b)}
+    end
+
   end
 
   # === Base class for commands
