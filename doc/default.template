@@ -24,7 +24,7 @@
 
       <!-- Sidebar -->
       <div id="sidebar">
-        <h1 id="logo"><a href="{relocatable: /}">cmdparse</a><br /><span>v 3.0.6</span></h1>
+        <h1 id="logo"><a href="{relocatable: /}">cmdparse</a><br /><span>v 3.0.7</span></h1>
 
         <!-- Nav -->
         <nav id="nav">
