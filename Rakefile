@@ -107,7 +107,6 @@ namespace :dev do
     s.add_development_dependency "webgen", "~> 1.4"
 
     #### Documentation
-    s.has_rdoc = true
     s.rdoc_options = ['--line-numbers', '--main', 'CmdParse::CommandParser']
 
     #### Author and project details
