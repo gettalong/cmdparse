@@ -898,6 +898,10 @@ module CmdParse
         @main_command.commands['help'].execute(*@current_command.command_chain.map(&:name))
       end
       exit(64) # FreeBSD standard exit error for "command was used incorrectly"
+    rescue Interrupt
+      exit(128 + 2)
+    rescue Errno::EPIPE
+      # Behave well when used in a pipe
     ensure
       @current_command = nil
     end
